@@ -1,0 +1,17 @@
+include: package:altive_lints/altive_lints.yaml
+linter:
+  rules:
+    - public_member_api_docs: false
+
+plugins:
+  altive_lints:
+    version: ^2.0.0
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gform.dart"
+  errors:
+    todo: ignore
+    hack: ignore

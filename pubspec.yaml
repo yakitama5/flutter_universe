@@ -1,0 +1,65 @@
+name: flutter_universe
+
+environment:
+  sdk: ^3.10.1
+  flutter: ^3.38.3
+
+workspace:
+  - apps/solar_system
+
+dev_dependencies:
+  altive_lints: ^2.0.0
+  flutter_lints: ^6.0.0
+  melos: ^7.3.0
+
+melos:
+  command:
+    bootstrap:
+      environment:
+        sdk: ^3.10.1
+        flutter: ^3.38.3
+      dependencies:
+        flutter_scene:
+          git:
+            url: https://github.com/yakitama5/flutter_scene.git
+            ref: master
+        flutter_scene_importer:
+          git:
+            url: https://github.com/yakitama5/flutter_scene.git
+            ref: master
+            path: importer
+        hooks: ^1.0.0
+        vector_math: ^2.2.0
+      dev_dependencies:
+        altive_lints: ^2.0.0
+      dependency_overrides:
+        flutter_scene:
+          git:
+            url: https://github.com/yakitama5/flutter_scene.git
+            ref: master
+        flutter_scene_importer:
+          git:
+            url: https://github.com/yakitama5/flutter_scene.git
+            ref: master
+            path: importer
+    clean:
+      hooks:
+        post: melos exec --flutter --concurrency=3 -- "flutter clean"
+
+  scripts:
+    # dart fix関連
+    fix:
+      exec: dart fix --apply lib
+      description: Run dart fix.
+      packageFilters:
+        dirExists: lib
+    fix:check:
+      exec: dart fix --dry-run lib
+      description: Check dart fix.
+      packageFilters:
+        dirExists: lib
+  ide:
+    intellij:
+      # Disabling IntelliJ's automatic configuration.
+      # This is to support different build configurations for environments.
+      enabled: false
