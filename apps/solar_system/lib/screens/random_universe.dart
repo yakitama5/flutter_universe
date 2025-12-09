@@ -28,6 +28,7 @@ import '../services/resource_cache.dart';
 /// プラネタリウム全体を管理するメインウィジェット
 class RandomUniverse extends StatefulWidget {
   const RandomUniverse({super.key, this.elapsedSeconds = 0});
+
   final double elapsedSeconds;
 
   @override

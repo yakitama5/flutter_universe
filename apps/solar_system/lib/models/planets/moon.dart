@@ -6,5 +6,6 @@ import 'planet.dart';
 class Moon extends Planet {
   Moon({required super.position})
     : super(node: ResourceCache.getModel(AssetModel.moon), radius: 1);
+
   static const double distanceFromEarth = 1;
 }

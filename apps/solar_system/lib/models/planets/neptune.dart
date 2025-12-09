@@ -6,5 +6,6 @@ import 'planet.dart';
 class Neptune extends Planet {
   Neptune({required super.position})
     : super(node: ResourceCache.getModel(AssetModel.neptune), radius: 4.5);
+
   static const double distanceFromSun = 32;
 }

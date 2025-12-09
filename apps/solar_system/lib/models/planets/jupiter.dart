@@ -6,5 +6,6 @@ import 'planet.dart';
 class Jupiter extends Planet {
   Jupiter({required super.position})
     : super(node: ResourceCache.getModel(AssetModel.jupiter), radius: 8);
+
   static const double distanceFromSun = 20;
 }

@@ -6,5 +6,6 @@ import 'planet.dart';
 class Uranus extends Planet {
   Uranus({required super.position})
     : super(node: ResourceCache.getModel(AssetModel.uranus), radius: 5);
+
   static const double distanceFromSun = 30;
 }

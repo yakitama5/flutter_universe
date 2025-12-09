@@ -12,7 +12,6 @@ abstract class Planet {
 
   void updateNode() {
     // 位置と回転をノードのトランスフォームに適用する
-    node.globalTransform =
-        Matrix4.translation(position) * Matrix4.rotationY(rotation);
+    node.globalTransform = Matrix4.translation(position)..rotateY(rotation);
   }
 }
