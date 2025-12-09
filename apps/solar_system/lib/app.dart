@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:solar_system/screens/random_universe.dart';
+import 'package:solar_system/screens/solar_system.dart';
 
 /// アプリケーションのメインウィジェット
 class App extends StatefulWidget {
@@ -35,7 +35,7 @@ class _AppState extends State<App> {
       home: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(title: Text('Solar System')),
-        body: RandomUniverse(elapsedSeconds: elapsedSeconds),
+        body: SolarSystem(elapsedSeconds: elapsedSeconds),
       ),
     );
   }

@@ -1,6 +1,5 @@
 /// 利用可能な3Dモデルの一覧
 enum AssetModel {
-  ufo('build/models/ufo.model', unlit: true),
   earth('build/models/earth.model'),
   fourPointedStar('build/models/four_pointed_star.model', unlit: true),
   jupiter('build/models/jupiter.model', unlit: true),
@@ -11,10 +10,10 @@ enum AssetModel {
   pentagram('build/models/pentagram.model'),
   polygonalStar('build/models/polygonal_star.model'),
   saturn('build/models/saturn.model'),
-  starDome('build/models/star_dome.model'),
   sun('build/models/sun.model', unlit: true),
   uranus('build/models/uranus.model', unlit: true),
-  venus('build/models/venus.model', unlit: true);
+  venus('build/models/venus.model', unlit: true)
+  ;
 
   final String path;
   final bool unlit;

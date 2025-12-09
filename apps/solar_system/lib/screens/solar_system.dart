@@ -26,22 +26,27 @@ import '../models/planets/venus.dart';
 import '../services/resource_cache.dart';
 
 /// プラネタリウム全体を管理するメインウィジェット
-class RandomUniverse extends StatefulWidget {
-  const RandomUniverse({super.key, this.elapsedSeconds = 0});
+class SolarSystem extends StatefulWidget {
+  const SolarSystem({super.key, this.elapsedSeconds = 0});
 
   final double elapsedSeconds;
 
   @override
-  RandomUniverseState createState() => RandomUniverseState();
+  SolarSystemState createState() => SolarSystemState();
 }
 
 /// プラネタリウムの状態を管理するステートクラス
-class RandomUniverseState extends State<RandomUniverse> {
+class SolarSystemState extends State<SolarSystem> {
+  // 3Dシーンとオブジェクトのリスト
   Scene scene = Scene();
   List<Planet> planets = [];
   final Map<Planet, Behavior> _behaviors = {};
   List<ShiningStar> shiningStars = [];
+
+  // ロード状態
   bool loaded = false;
+
+  // カメラ操作用のフォーカスノード
   final FocusNode _focusNode = FocusNode();
 
   // 星の配置用の定数
@@ -55,13 +60,13 @@ class RandomUniverseState extends State<RandomUniverse> {
   static const double _rotationSpeed = 1;
 
   // カメラの状態
-  vm.Vector3 _cameraPosition = vm.Vector3(0, _universeSize - 1, 0); // Y軸上から見下ろす
-  double _cameraYaw = 0; // Z軸負の方向が上になるように
-  double _cameraPitch = -90; // 真下を向く
+  vm.Vector3 _cameraPosition = vm.Vector3(0, _universeSize - 1, 0);
+  double _cameraYaw = 0;
+  double _cameraPitch = -90;
   double _lastScale = 1;
-  bool _isPaused = false; // 追加
+  bool _isPaused = false;
 
-  // ジェスチャーリコグナイザー
+  // ジェスチャー用の認識器
   late final ScaleGestureRecognizer _scaleRecognizer;
   late final PanGestureRecognizer _panRecognizer;
 
@@ -260,12 +265,6 @@ class RandomUniverseState extends State<RandomUniverse> {
           case LogicalKeyboardKey.arrowDown:
             _cameraPitch -= _rotationSpeed;
             if (_cameraPitch < _minPitch) _cameraPitch = _minPitch;
-          // Spaceキーで前進 (Wキーと重複するが、元の機能なので維持)
-          case LogicalKeyboardKey.space:
-            final newPosition = _cameraPosition + cameraFront * _cameraSpeed;
-            if (newPosition.length < _universeSize) {
-              _cameraPosition = newPosition;
-            }
         }
       });
       return KeyEventResult.handled;
