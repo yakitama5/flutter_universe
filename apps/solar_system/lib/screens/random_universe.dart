@@ -44,11 +44,14 @@ class RandomUniverseState extends State<RandomUniverse> {
   bool loaded = false;
   final FocusNode _focusNode = FocusNode();
 
+  // 星の配置用の定数
+  static const int _numberOfStars = 1000;
+
   // カメラ制御用の定数
   static const double _universeSize = 100;
   static const double _maxPitch = 89;
   static const double _minPitch = -89;
-  static const double _cameraSpeed = 1;
+  static const double _cameraSpeed = 0.5;
   static const double _rotationSpeed = 1;
 
   // カメラの状態
@@ -76,7 +79,7 @@ class RandomUniverseState extends State<RandomUniverse> {
         AssetModel.polygonalStar,
         AssetModel.fourPointedStar,
       ];
-      shiningStars = List.generate(500, (i) {
+      shiningStars = List.generate(_numberOfStars, (i) {
         // 球体内にランダムな座標を生成
         final r = _universeSize * pow(random.nextDouble(), 1 / 3);
         final theta = acos(2 * random.nextDouble() - 1);
@@ -243,10 +246,10 @@ class RandomUniverseState extends State<RandomUniverse> {
             if (newPosition.length < _universeSize) {
               _cameraPosition = newPosition;
             }
-          // Aキーで左にヨー回転
+          // Aキーで左に回転
           case LogicalKeyboardKey.keyA:
             _cameraYaw += _rotationSpeed;
-          // Dキーで右にヨー回転
+          // Dキーで右に回転
           case LogicalKeyboardKey.keyD:
             _cameraYaw -= _rotationSpeed;
           // 上矢印キーでピッチを上げる
@@ -305,7 +308,7 @@ class RandomUniverseState extends State<RandomUniverse> {
       // 2本指のピンチによるズーム
       if (details.scale != 1.0) {
         final scaleDelta = details.scale - _lastScale;
-        const zoomFactor = 2.0;
+        const zoomFactor = 0.5;
         final newPosition =
             _cameraPosition + cameraFront * scaleDelta * zoomFactor;
 
@@ -411,11 +414,11 @@ class RandomUniverseState extends State<RandomUniverse> {
                     icon: Icon(
                       _isPaused
                           ? Icons.play_circle_filled
-                          : Icons.pause_circle_filled,
+                          : Icons.stop_circle_rounded,
                       size: 40,
                     ),
                     label: Text(
-                      _isPaused ? '再生' : '一時停止',
+                      _isPaused ? '再生' : '停止',
                       style: const TextStyle(fontSize: 20),
                     ),
                     style: ElevatedButton.styleFrom(
