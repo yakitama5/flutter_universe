@@ -13,10 +13,11 @@ class ShiningStar {
     double rotationY = 0,
     double rotationZ = 0,
   }) : node = ResourceCache.getModel(model)
-         ..globalTransform = (Matrix4.translation(position)
-           ..rotateX(rotationX)
-           ..rotateY(rotationY)
-           ..rotateZ(rotationZ));
+         ..globalTransform = Matrix4.compose(
+           position,
+           Quaternion.euler(rotationX, rotationY, rotationZ),
+           Vector3(1, 1, -1),
+         );
 
   final Node node;
 }

@@ -1,21 +1,20 @@
 /// 利用可能な3Dモデルの一覧
 enum AssetModel {
   earth('build/models/earth.model'),
-  fourPointedStar('build/models/four_pointed_star.model', unlit: true),
-  jupiter('build/models/jupiter.model', unlit: true),
-  mars('build/models/mars.model', unlit: true),
-  mercury('build/models/mercury.model', unlit: true),
-  moon('build/models/moon.model', unlit: true),
-  neptune('build/models/neptune.model', unlit: true),
+  fourPointedStar('build/models/four_pointed_star.model'),
+  jupiter('build/models/jupiter.model'),
+  mars('build/models/mars.model'),
+  mercury('build/models/mercury.model'),
+  moon('build/models/moon.model'),
+  neptune('build/models/neptune.model'),
   pentagram('build/models/pentagram.model'),
   polygonalStar('build/models/polygonal_star.model'),
   saturn('build/models/saturn.model'),
-  sun('build/models/sun.model', unlit: true),
-  uranus('build/models/uranus.model', unlit: true),
-  venus('build/models/venus.model', unlit: true)
+  sun('build/models/sun.model'),
+  uranus('build/models/uranus.model'),
+  venus('build/models/venus.model')
   ;
 
   final String path;
-  final bool unlit;
-  const AssetModel(this.path, {this.unlit = false});
+  const AssetModel(this.path);
 }

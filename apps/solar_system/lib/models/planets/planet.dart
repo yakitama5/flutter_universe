@@ -12,6 +12,9 @@ abstract class Planet {
 
   void updateNode() {
     // 位置と回転をノードのトランスフォームに適用する
-    node.globalTransform = Matrix4.translation(position)..rotateY(rotation);
+    // モデルを更新
+    final quaternion = Quaternion.euler(rotation, 0, 0);
+    final scale = Vector3(1, 1, -1);
+    node.globalTransform = Matrix4.compose(position, quaternion, scale);
   }
 }
