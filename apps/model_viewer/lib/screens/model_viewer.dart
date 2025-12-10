@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scene/scene.dart';
+import 'package:model_viewer/camera_up.dart';
+import 'package:model_viewer/screens/viewer_state_bar.dart';
 import 'package:model_viewer/viewer_state.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
@@ -46,56 +48,70 @@ class ModelViewerState extends State<ModelViewer> {
     if (!loaded) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    // モデルを更新
+    final vm.Matrix4 transform =
+        vm.Matrix4.translation(
+            vm.Vector3(
+              viewerState.modelPositionX,
+              viewerState.modelPositionY,
+              viewerState.modelPositionZ,
+            ),
+          )
+          ..rotateX(viewerState.modelRotationX)
+          ..rotateY(viewerState.modelRotationY)
+          ..rotateZ(viewerState.modelRotationZ)
+          ..scale(viewerState.modelScale);
+    dashModel.globalTransform = transform;
+
     return Row(
       children: [
         Expanded(
           child: CustomPaint(
-            painter: _ScenePainter(scene),
+            painter: _ScenePainter(scene, viewerState),
           ),
         ),
-        ToolBar(
-          viewerState: viewerState,
-          onChanged: (state) {
-            setState(() {
-              viewerState = state;
-            });
-          },
+        SizedBox(
+          width: 160,
+          child: ViewerStateBar(
+            viewerState: viewerState,
+            onChanged: (state) {
+              setState(() {
+                viewerState = state;
+              });
+            },
+          ),
         ),
       ],
     );
   }
 }
 
-typedef ViewerStateChanged = void Function(ViewerState state);
-
-class ToolBar extends StatelessWidget {
-  const ToolBar({
-    super.key,
-    required this.viewerState,
-    required this.onChanged,
-  });
+class _ScenePainter extends CustomPainter {
+  _ScenePainter(this.scene, this.viewerState);
 
   final ViewerState viewerState;
-  final ViewerStateChanged onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [],
-    );
-  }
-}
-
-class _ScenePainter extends CustomPainter {
-  _ScenePainter(this.scene);
-
   Scene scene;
 
   @override
   void paint(Canvas canvas, Size size) {
     final camera = PerspectiveCamera(
-      position: vm.Vector3(0, 0, 0),
-      target: vm.Vector3(0, 0, 10),
+      position: vm.Vector3(
+        viewerState.cameraPositionX,
+        viewerState.cameraPositionY,
+        viewerState.cameraPositionZ,
+      ),
+      target: vm.Vector3(
+        viewerState.cameraTargetX,
+        viewerState.cameraTargetY,
+        viewerState.cameraTargetZ,
+      ),
+      up: switch (viewerState.cameraUp) {
+        CameraUp.up => vm.Vector3(0, 1, 0),
+        CameraUp.down => vm.Vector3(0, -1, 0),
+        CameraUp.left => vm.Vector3(-1, 0, 0),
+        CameraUp.right => vm.Vector3(1, 0, 0),
+      },
     );
 
     scene.render(camera, canvas, viewport: Offset.zero & size);
