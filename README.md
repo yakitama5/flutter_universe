@@ -7,17 +7,21 @@
 
 このリポジトリには、以下の2つの主要なサンプルが含まれています。
 
-* **Solar System (`solar_system`)**
-  * `flutter_scene` を使用して不動モデルおよび動的モデル（惑星）を描画するデモです。
-  * 3Dオブジェクトの階層構造やアニメーションの基礎を確認できます。
+- **Model Viewer (`model_viewer`)**
+  - `flutter_scene` を使用して不動モデルに対する基本的なモデル・カメラ操作を行うデモです。
+    <video src="https://github.com/user-attachments/assets/8f356490-d509-4027-a76f-a32a2fa1dac2" height="240" controls="true">
 
-* **Rocket Game (`rocket_game`)**
-  * ユーザー入力に基づくインタラクティブな操作を伴う3Dゲームのデモです。
-  * 動的な更新処理や状態管理の実装例が含まれています。
+- **Solar System (`solar_system`)**
+  - `flutter_scene` を使用して不動モデルおよび動的モデル（惑星）を描画するデモです。
+  - 3Dオブジェクトの階層構造やアニメーションの基礎を確認できます。
+
+- **Rocket Game (`rocket_game`)**
+  - ユーザー入力に基づくインタラクティブな操作を伴う3Dゲームのデモです。
+  - 動的な更新処理や状態管理の実装例が含まれています。
 
 ## 動作プラットフォーム
 
-* **Mac** (Impeller有効化推奨)
+- **Mac** (Impeller有効化推奨)
 
 ## セットアップ方法
 
@@ -54,3 +58,4 @@ VS Codeの「実行とデバッグ」機能を使用して、起動するアプ�
     * **solar_system**
     * **rocket_game**
 3. `F5` キーを押すか、再生ボタンをクリックしてアプリをビルド・実行してください。
+
