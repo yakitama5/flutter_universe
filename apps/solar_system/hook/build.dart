@@ -6,7 +6,6 @@ void main(List<String> args) async {
     buildModels(
       buildInput: config,
       inputFilePaths: [
-        'assets/glb/ufo.glb',
         'assets/glb/earth.glb',
         'assets/glb/four_pointed_star.glb',
         'assets/glb/jupiter.glb',
@@ -17,7 +16,6 @@ void main(List<String> args) async {
         'assets/glb/pentagram.glb',
         'assets/glb/polygonal_star.glb',
         'assets/glb/saturn.glb',
-        'assets/glb/star_dome.glb',
         'assets/glb/sun.glb',
         'assets/glb/uranus.glb',
         'assets/glb/venus.glb',
