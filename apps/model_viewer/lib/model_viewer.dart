@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:model_viewer/camera_up.dart';
-import 'package:model_viewer/screens/viewer_state_bar.dart';
 import 'package:model_viewer/viewer_state.dart';
+import 'package:model_viewer/viewer_state_bar.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 class ModelViewer extends StatefulWidget {
