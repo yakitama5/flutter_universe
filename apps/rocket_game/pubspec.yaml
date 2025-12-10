@@ -13,6 +13,7 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
   flutter_scene:
     git:
       url: https://github.com/yakitama5/flutter_scene.git
@@ -22,9 +23,11 @@ dependencies:
       url: https://github.com/yakitama5/flutter_scene.git
       ref: master
       path: importer
+  flutter_soloud: ^3.4.6
+  gamepads: ^0.1.9
   hooks: ^1.0.0
+  json_annotation: ^4.9.0
   vector_math: ^2.2.0
-
 
 dev_dependencies:
   altive_lints: ^2.0.0
