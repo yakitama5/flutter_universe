@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:model_viewer/screens/model_viewer.dart';
+import 'package:model_viewer/model_viewer.dart';
 
 /// アプリケーションのメインウィジェット
 class App extends StatefulWidget {
