@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart'; // @immutable アノテーションなどで使用 (任意)
 import 'package:model_viewer/camera_up.dart';
+import 'package:model_viewer/dash_animation.dart';
 
 /// モデルビューアの状態を管理するクラス
 @immutable
 final class ViewerState {
   const ViewerState({
+    this.dashAnimation = DashAnimation.idle,
     this.modelPositionX = 0,
     this.modelPositionY = 0,
     this.modelPositionZ = 0,
@@ -21,6 +23,8 @@ final class ViewerState {
     this.cameraUp = CameraUp.up,
   });
 
+  // モデルのアニメーション
+  final DashAnimation dashAnimation;
   // モデルの位置
   final double modelPositionX;
   final double modelPositionY;
@@ -44,6 +48,7 @@ final class ViewerState {
 
   /// 現在のインスタンスを元に、指定されたフィールドだけを更新した新しいインスタンスを返します。
   ViewerState copyWith({
+    DashAnimation? dashAnimation,
     double? modelPositionX,
     double? modelPositionY,
     double? modelPositionZ,
@@ -60,6 +65,7 @@ final class ViewerState {
     CameraUp? cameraUp,
   }) {
     return ViewerState(
+      dashAnimation: dashAnimation ?? this.dashAnimation,
       modelPositionX: modelPositionX ?? this.modelPositionX,
       modelPositionY: modelPositionY ?? this.modelPositionY,
       modelPositionZ: modelPositionZ ?? this.modelPositionZ,
@@ -82,6 +88,7 @@ final class ViewerState {
     if (identical(this, other)) return true;
 
     return other is ViewerState &&
+        other.dashAnimation == dashAnimation &&
         other.modelPositionX == modelPositionX &&
         other.modelPositionY == modelPositionY &&
         other.modelPositionZ == modelPositionZ &&
@@ -101,6 +108,7 @@ final class ViewerState {
   @override
   int get hashCode {
     return Object.hash(
+      dashAnimation,
       modelPositionX,
       modelPositionY,
       modelPositionZ,
@@ -121,6 +129,7 @@ final class ViewerState {
   @override
   String toString() {
     return 'ViewerState('
+        'animation: $dashAnimation, '
         'modelPos: ($modelPositionX, $modelPositionY, $modelPositionZ), '
         'modelRot: ($modelRotationX, $modelRotationY, $modelRotationZ), '
         'scale: $modelScale, '

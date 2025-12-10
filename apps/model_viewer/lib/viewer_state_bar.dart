@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:model_viewer/camera_up.dart';
+import 'package:model_viewer/dash_animation.dart';
 import 'package:model_viewer/viewer_state.dart';
 
 typedef ViewerStateChanged = void Function(ViewerState state);
@@ -28,6 +29,31 @@ class ViewerStateBar extends StatelessWidget {
         Text(
           'Model',
           style: tt.headlineMedium,
+        ),
+        Column(
+          children: [
+            Text('Animation'),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<DashAnimation>(
+                segments: DashAnimation.values
+                    .map(
+                      (v) => ButtonSegment(
+                        value: v,
+                        label: Text(v.name),
+                        icon: Icon(switch (v) {
+                          DashAnimation.idle => Icons.stop_circle,
+                          DashAnimation.run => Icons.run_circle,
+                        }),
+                      ),
+                    )
+                    .toList(),
+                selected: {viewerState.dashAnimation},
+                onSelectionChanged: (v) =>
+                    onChanged(viewerState.copyWith(dashAnimation: v.first)),
+              ),
+            ),
+          ],
         ),
         Column(
           children: [
@@ -208,15 +234,21 @@ class CameraUpIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconData = switch (value) {
+      CameraUp.up => Icons.arrow_drop_up,
+      CameraUp.down => Icons.arrow_drop_down,
+      CameraUp.left => Icons.arrow_left,
+      CameraUp.right => Icons.arrow_right,
+    };
     if (selectedValue == value) {
       return IconButton.filled(
         onPressed: () => onPressed(value),
-        icon: Icon(value.iconData),
+        icon: Icon(iconData),
       );
     } else {
       return IconButton.outlined(
         onPressed: () => onPressed(value),
-        icon: Icon(value.iconData),
+        icon: Icon(iconData),
       );
     }
   }
