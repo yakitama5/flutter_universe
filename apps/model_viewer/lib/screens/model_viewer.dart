@@ -21,20 +21,24 @@ class ModelViewerState extends State<ModelViewer> {
   ViewerState viewerState = ViewerState();
 
   @override
-  void initState() async {
-    // モデルの読み込み
-    dashModel = await Node.fromAsset('build/models/dash.model');
-
-    // シーンにモデルを追加
-    scene.add(dashModel);
-
-    // ローディング完了の通知
-    debugPrint('Scene loaded.');
-    setState(() {
-      loaded = true;
-    });
-
+  void initState() {
     super.initState();
+
+    // モデルの読み込み
+    Node.fromAsset(
+      'build/models/dash.model',
+    ).then((model) {
+      dashModel = model;
+
+      // シーンにモデルを追加
+      scene.add(dashModel);
+
+      // ローディング完了の通知
+      debugPrint('Scene loaded.');
+      setState(() {
+        loaded = true;
+      });
+    });
   }
 
   @override
@@ -61,18 +65,26 @@ class ModelViewerState extends State<ModelViewer> {
           ..rotateX(viewerState.modelRotationX)
           ..rotateY(viewerState.modelRotationY)
           ..rotateZ(viewerState.modelRotationZ)
-          ..scale(viewerState.modelScale);
+          ..scaleByVector3(
+            vm.Vector3(
+              viewerState.modelScale,
+              viewerState.modelScale,
+              viewerState.modelScale,
+            ),
+          );
     dashModel.globalTransform = transform;
 
     return Row(
       children: [
         Expanded(
-          child: CustomPaint(
-            painter: _ScenePainter(scene, viewerState),
+          child: SizedBox.expand(
+            child: CustomPaint(
+              painter: _ScenePainter(scene, viewerState),
+            ),
           ),
         ),
         SizedBox(
-          width: 160,
+          width: 240,
           child: ViewerStateBar(
             viewerState: viewerState,
             onChanged: (state) {

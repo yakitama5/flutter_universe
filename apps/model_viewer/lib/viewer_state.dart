@@ -14,10 +14,10 @@ final class ViewerState {
     this.modelScale = 1,
     this.cameraPositionX = 0,
     this.cameraPositionY = 0,
-    this.cameraPositionZ = 0,
+    this.cameraPositionZ = 10,
     this.cameraTargetX = 0,
     this.cameraTargetY = 0,
-    this.cameraTargetZ = 10,
+    this.cameraTargetZ = 0,
     this.cameraUp = CameraUp.up,
   });
 

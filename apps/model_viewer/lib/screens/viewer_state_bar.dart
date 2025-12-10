@@ -18,7 +18,7 @@ class ViewerStateBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
 
-    return Column(
+    return ListView(
       children: [
         Text(
           'Model',
@@ -71,19 +71,19 @@ class ViewerStateBar extends StatelessWidget {
             RotationSlider(
               value: viewerState.modelRotationX,
               onChanged: (value) =>
-                  onChanged(viewerState.copyWith(modelPositionX: value)),
+                  onChanged(viewerState.copyWith(modelRotationX: value)),
               header: 'X',
             ),
             RotationSlider(
               value: viewerState.modelRotationY,
               onChanged: (value) =>
-                  onChanged(viewerState.copyWith(modelPositionY: value)),
+                  onChanged(viewerState.copyWith(modelRotationY: value)),
               header: 'Y',
             ),
             RotationSlider(
               value: viewerState.modelRotationZ,
               onChanged: (value) =>
-                  onChanged(viewerState.copyWith(modelPositionZ: value)),
+                  onChanged(viewerState.copyWith(modelRotationZ: value)),
               header: 'Z',
             ),
           ],
@@ -96,19 +96,19 @@ class ViewerStateBar extends StatelessWidget {
         Column(
           children: [
             Text('Position'),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraPositionX,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraPositionX: value)),
               header: 'X',
             ),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraPositionY,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraPositionY: value)),
               header: 'Y',
             ),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraPositionZ,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraPositionZ: value)),
@@ -119,19 +119,19 @@ class ViewerStateBar extends StatelessWidget {
         Column(
           children: [
             Text('Target'),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraTargetX,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraTargetX: value)),
               header: 'X',
             ),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraTargetY,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraTargetY: value)),
               header: 'Y',
             ),
-            ModelPositionSlider(
+            CameraPositionSlider(
               value: viewerState.cameraTargetZ,
               onChanged: (value) =>
                   onChanged(viewerState.copyWith(cameraTargetZ: value)),
@@ -146,31 +146,31 @@ class ViewerStateBar extends StatelessWidget {
             CameraUpIconButton(
               onPressed: (value) =>
                   onChanged(viewerState.copyWith(cameraUp: value)),
-              value: viewerState.cameraUp,
-              selectedValue: CameraUp.up,
+              value: CameraUp.up,
+              selectedValue: viewerState.cameraUp,
             ),
             Row(
-              mainAxisAlignment: .spaceBetween,
+              mainAxisAlignment: .spaceAround,
               children: [
                 CameraUpIconButton(
                   onPressed: (value) =>
                       onChanged(viewerState.copyWith(cameraUp: value)),
-                  value: viewerState.cameraUp,
-                  selectedValue: CameraUp.left,
+                  value: CameraUp.left,
+                  selectedValue: viewerState.cameraUp,
                 ),
                 CameraUpIconButton(
                   onPressed: (value) =>
                       onChanged(viewerState.copyWith(cameraUp: value)),
-                  value: viewerState.cameraUp,
-                  selectedValue: CameraUp.right,
+                  value: CameraUp.right,
+                  selectedValue: viewerState.cameraUp,
                 ),
               ],
             ),
             CameraUpIconButton(
               onPressed: (value) =>
                   onChanged(viewerState.copyWith(cameraUp: value)),
-              value: viewerState.cameraUp,
-              selectedValue: CameraUp.down,
+              value: CameraUp.down,
+              selectedValue: viewerState.cameraUp,
             ),
           ],
         ),
@@ -204,12 +204,12 @@ class CameraUpIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (selectedValue == value) {
-      return IconButton(
+      return IconButton.filled(
         onPressed: () => onPressed(value),
         icon: Icon(value.iconData),
       );
     } else {
-      return IconButton(
+      return IconButton.outlined(
         onPressed: () => onPressed(value),
         icon: Icon(value.iconData),
       );
@@ -236,10 +236,40 @@ class RotationSlider extends StatelessWidget {
         Text(header),
         Slider(
           value: value,
-          min: -180,
-          max: 180,
-          divisions: 360,
-          label: value.toStringAsFixed(1),
+          min: -6,
+          max: 6,
+          divisions: 600,
+          label: value.toStringAsFixed(2),
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
+}
+
+class CameraPositionSlider extends StatelessWidget {
+  const CameraPositionSlider({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    required this.header,
+  });
+
+  final String header;
+  final double value;
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(header),
+        Slider(
+          value: value,
+          min: -50,
+          max: 50,
+          divisions: 100,
+          label: value.toStringAsFixed(0),
           onChanged: onChanged,
         ),
       ],
@@ -266,10 +296,10 @@ class ModelPositionSlider extends StatelessWidget {
         Text(header),
         Slider(
           value: value,
-          min: -50,
-          max: 50,
-          divisions: 100,
-          label: value.toStringAsFixed(1),
+          min: -10,
+          max: 10,
+          divisions: 20,
+          label: value.toStringAsFixed(0),
           onChanged: onChanged,
         ),
       ],
