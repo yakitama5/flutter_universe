@@ -19,6 +19,14 @@
       "program": "lib/main.dart",
       "type": "dart",
       "args": ["--enable-flutter-gpu", "--enable-impeller"]
+    },
+    {
+      "name": "RocketGame",
+      "cwd": "apps/rocket_game",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "type": "dart",
+      "args": ["--enable-flutter-gpu", "--enable-impeller"]
     }
   ]
 }
