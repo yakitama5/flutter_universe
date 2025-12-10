@@ -1,5 +1,6 @@
-name: solar_system
-description: "This is a sample project of the solar system using FlutterScene."
+name: model_viewer
+description: "This is a sample project that expresses the motion of the Earth
+  and the Moon using FlutterScene."
 publish_to: "none"
 
 version: 1.0.0+1
@@ -24,7 +25,6 @@ dependencies:
       path: importer
   hooks: ^1.0.0
   vector_math: ^2.2.0
-
 
 dev_dependencies:
   altive_lints: ^2.0.0

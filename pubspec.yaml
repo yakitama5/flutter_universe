@@ -6,11 +6,24 @@ environment:
 
 workspace:
   - apps/solar_system
+  - apps/model_viewer
 
 dev_dependencies:
   altive_lints: ^2.0.0
   flutter_lints: ^6.0.0
   melos: ^7.3.0
+
+dependency_overrides:
+  flutter_scene:
+    git:
+      url: https://github.com/yakitama5/flutter_scene.git
+      ref: master
+
+  flutter_scene_importer:
+    git:
+      url: https://github.com/yakitama5/flutter_scene.git
+      ref: master
+      path: importer
 
 melos:
   command:
@@ -32,16 +45,6 @@ melos:
         vector_math: ^2.2.0
       dev_dependencies:
         altive_lints: ^2.0.0
-      dependency_overrides:
-        flutter_scene:
-          git:
-            url: https://github.com/yakitama5/flutter_scene.git
-            ref: master
-        flutter_scene_importer:
-          git:
-            url: https://github.com/yakitama5/flutter_scene.git
-            ref: master
-            path: importer
     clean:
       hooks:
         post: melos exec --flutter --concurrency=3 -- "flutter clean"
