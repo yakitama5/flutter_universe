@@ -20,6 +20,11 @@ class ViewerStateBar extends StatelessWidget {
 
     return ListView(
       children: [
+        FilledButton(
+          onPressed: () => onChanged(ViewerState()),
+          child: Text('Reset'),
+        ),
+        Divider(),
         Text(
           'Model',
           style: tt.headlineMedium,

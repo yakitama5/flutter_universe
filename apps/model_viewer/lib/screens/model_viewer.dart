@@ -26,9 +26,9 @@ class ModelViewerState extends State<ModelViewer> {
 
     // モデルの読み込み
     Node.fromAsset(
-      'build/models/dash.model',
+      'build/models/flutter_logo_baked.model',
     ).then((model) {
-      dashModel = model;
+      dashModel = _convertToUnlit(model);
 
       // シーンにモデルを追加
       scene.add(dashModel);
@@ -39,6 +39,25 @@ class ModelViewerState extends State<ModelViewer> {
         loaded = true;
       });
     });
+  }
+
+  /// ノードをアンリットマテリアルに変換する
+  Node _convertToUnlit(Node node) {
+    if (node.mesh != null) {
+      for (final primitive in node.mesh!.primitives) {
+        if (primitive.material is PhysicallyBasedMaterial) {
+          final pbr = primitive.material as PhysicallyBasedMaterial;
+          primitive.material = UnlitMaterial(
+            colorTexture: pbr.baseColorTexture,
+          );
+        }
+      }
+    }
+    for (final child in node.children) {
+      _convertToUnlit(child);
+    }
+
+    return node;
   }
 
   @override

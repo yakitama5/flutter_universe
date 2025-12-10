@@ -6,7 +6,7 @@ void main(List<String> args) async {
     buildModels(
       buildInput: config,
       inputFilePaths: [
-        'assets/glb/dash.glb',
+        'assets/glb/flutter_logo_baked.glb',
       ],
     );
   });
