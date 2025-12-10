@@ -71,7 +71,7 @@ class _RocketGameState extends State<RocketGame> {
 
       return Asteroid(
         position: Vector3(0, 0, z),
-        rotation: Vector3.zero(),
+        rotation: Quaternion.euler(0, 0, 0),
         gameState: gameState!,
       );
     });

@@ -15,7 +15,7 @@ class Asteroid {
     AssetModel assetModel = AssetModel.asteroid1,
   }) {
     // 生成時に位置と回転角度を決定する
-    final transform = Matrix4.translation(position)..rotate3(rotation);
+    final transform = Matrix4.compose(position, rotation, Vector3(1, 1, -1));
     node = ResourceCache.getModel(assetModel)..globalTransform = transform;
   }
 
@@ -23,7 +23,7 @@ class Asteroid {
   final GameState gameState;
 
   Vector3 position;
-  Vector3 rotation;
+  Quaternion rotation;
 
   void update() {
     /// プレイヤーとの衝突判定を監視
