@@ -5,8 +5,9 @@ environment:
   flutter: ^3.38.3
 
 workspace:
-  - apps/solar_system
   - apps/model_viewer
+  - apps/solar_system
+  - apps/rocket_game
 
 dev_dependencies:
   altive_lints: ^2.0.0
