@@ -34,5 +34,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    # Imported models.
+    # hooksで作成したモデルを読み込むように指定
     - build/models/

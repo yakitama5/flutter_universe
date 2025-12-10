@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Matrix4;
 import 'package:flutter_scene/scene.dart';
 import 'package:model_viewer/camera_up.dart';
 import 'package:model_viewer/viewer_state.dart';
 import 'package:model_viewer/viewer_state_bar.dart';
-import 'package:vector_math/vector_math.dart' as vm;
+import 'package:vector_math/vector_math.dart';
 
 class ModelViewer extends StatefulWidget {
   const ModelViewer({super.key});
@@ -73,24 +73,32 @@ class ModelViewerState extends State<ModelViewer> {
     }
 
     // モデルを更新
-    final vm.Matrix4 transform =
-        vm.Matrix4.translation(
-            vm.Vector3(
+    final Matrix4 transform =
+        // 位置
+        Matrix4.translation(
+            Vector3(
               viewerState.modelPositionX,
               viewerState.modelPositionY,
               viewerState.modelPositionZ,
             ),
           )
-          ..rotateX(viewerState.modelRotationX)
-          ..rotateY(viewerState.modelRotationY)
-          ..rotateZ(viewerState.modelRotationZ)
+          // 回転
+          ..rotate3(
+            Vector3(
+              viewerState.modelRotationX,
+              viewerState.modelRotationY,
+              viewerState.modelRotationZ,
+            ),
+          )
+          // スケール
           ..scaleByVector3(
-            vm.Vector3(
+            Vector3(
               viewerState.modelScale,
               viewerState.modelScale,
               viewerState.modelScale,
             ),
           );
+    // `globalTransform`を変更して反映する
     dashModel.globalTransform = transform;
 
     return Row(
@@ -127,21 +135,25 @@ class _ScenePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final camera = PerspectiveCamera(
-      position: vm.Vector3(
+      // カメラの位置 - 3D空間上のどこに置くかを座標指定する
+      position: Vector3(
         viewerState.cameraPositionX,
         viewerState.cameraPositionY,
         viewerState.cameraPositionZ,
       ),
-      target: vm.Vector3(
+      // カメラの向き - 3D空間上のどこを見るかを座標指定する
+      target: Vector3(
         viewerState.cameraTargetX,
         viewerState.cameraTargetY,
         viewerState.cameraTargetZ,
       ),
+      // カメラの頂点 - カメラの頂点をどこに向けるか
+      // 寝かせたり逆さにしたりかたむけたりなど
       up: switch (viewerState.cameraUp) {
-        CameraUp.up => vm.Vector3(0, 1, 0),
-        CameraUp.down => vm.Vector3(0, -1, 0),
-        CameraUp.left => vm.Vector3(-1, 0, 0),
-        CameraUp.right => vm.Vector3(1, 0, 0),
+        CameraUp.up => Vector3(0, 1, 0),
+        CameraUp.down => Vector3(0, -1, 0),
+        CameraUp.left => Vector3(-1, 0, 0),
+        CameraUp.right => Vector3(1, 0, 0),
       },
     );
 
