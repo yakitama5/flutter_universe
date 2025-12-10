@@ -7,7 +7,7 @@ void main(List<String> args) async {
       buildInput: config,
       inputFilePaths: [
         // 用意したassetsを記載
-        'assets/glb/flutter_logo_baked.glb',
+        'assets/glb/dash.glb',
       ],
     );
   });

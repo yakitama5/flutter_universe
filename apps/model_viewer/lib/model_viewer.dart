@@ -26,7 +26,7 @@ class ModelViewerState extends State<ModelViewer> {
 
     // モデルの読み込み
     Node.fromAsset(
-      'build/models/flutter_logo_baked.model',
+      'build/models/dash.model',
     ).then((model) {
       dashModel = _convertToUnlit(model);
 
@@ -73,33 +73,23 @@ class ModelViewerState extends State<ModelViewer> {
     }
 
     // モデルを更新
-    final Matrix4 transform =
-        // 位置
-        Matrix4.translation(
-            Vector3(
-              viewerState.modelPositionX,
-              viewerState.modelPositionY,
-              viewerState.modelPositionZ,
-            ),
-          )
-          // 回転
-          ..rotate3(
-            Vector3(
-              viewerState.modelRotationX,
-              viewerState.modelRotationY,
-              viewerState.modelRotationZ,
-            ),
-          )
-          // スケール
-          ..scaleByVector3(
-            Vector3(
-              viewerState.modelScale,
-              viewerState.modelScale,
-              viewerState.modelScale,
-            ),
-          );
+    final translation = Vector3(
+      viewerState.modelPositionX,
+      viewerState.modelPositionY,
+      viewerState.modelPositionZ,
+    );
+    final rotation = Quaternion.euler(
+      viewerState.modelRotationY,
+      viewerState.modelRotationZ,
+      viewerState.modelRotationX,
+    );
+    final scale = Vector3(
+      viewerState.modelScale,
+      viewerState.modelScale,
+      -viewerState.modelScale, // 表示面が逆転するので、Z軸は反転させる
+    );
     // `globalTransform`を変更して反映する
-    dashModel.globalTransform = transform;
+    dashModel.globalTransform = Matrix4.compose(translation, rotation, scale);
 
     return Row(
       children: [
