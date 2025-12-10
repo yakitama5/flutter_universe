@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/models/enum/asset_model.dart';
 import 'package:rocket_game/screens/asteroid.dart';
 import 'package:rocket_game/screens/camera.dart';
 import 'package:rocket_game/screens/game.dart';
 import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
+import 'package:rocket_game/screens/scene_painter.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
@@ -53,12 +53,12 @@ class _RocketGameState extends State<RocketGame> {
     );
     resetTimer();
 
-    gameState = GameState(
-      scene: scene,
-      player: KinematicPlayer(),
-    );
-
     ResourceCache.preloadAll().then((_) {
+      gameState = GameState(
+        scene: scene,
+        player: KinematicPlayer(),
+      );
+
       setupPlay();
     });
 
@@ -77,7 +77,7 @@ class _RocketGameState extends State<RocketGame> {
     });
 
     scene.addAll(asteroids.map((e) => e.node));
-    scene.add(ResourceCache.getModel(AssetModel.starship));
+    // scene.add(ResourceCache.getModel(AssetModel.starship));
 
     setState(() {
       gameMode = GameMode.playing;
@@ -100,7 +100,7 @@ class _RocketGameState extends State<RocketGame> {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: CustomPaint(
-        painter: ScenePainter(scene: scene, camera: camera.camera),
+        painter: RocketScenePainter(scene: scene, camera: camera.camera),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rocket_game/screens/rocket_game.dart';
 
 /// アプリケーションのメインウィジェット
 class App extends StatelessWidget {
@@ -11,6 +12,7 @@ class App extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(title: Text('Rocket Game')),
+        body: RocketGame(),
       ),
     );
   }
