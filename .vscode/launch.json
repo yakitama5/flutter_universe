@@ -5,6 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "ModelViewer",
+      "cwd": "apps/model_viewer",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "type": "dart",
+      "args": ["--enable-flutter-gpu", "--enable-impeller"]
+    },
+    {
       "name": "SolarSystem",
       "cwd": "apps/solar_system",
       "request": "launch",
