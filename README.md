@@ -9,7 +9,7 @@
 
 - **Model Viewer (`model_viewer`)**
   - `flutter_scene` を使用して不動モデルに対する基本的なモデル・カメラ操作を行うデモです。
-    <video src="https://github.com/user-attachments/assets/0882d528-aa4a-4944-8630-9705555999ee" height="240" controls="true">
+    <video src="https://github.com/user-attachments/assets/1be82f8b-f88c-4c5e-905e-fb93d76dd75b" height="240" controls="true">
 
 - **Solar System (`solar_system`)**
   - `flutter_scene` を使用して不動モデルおよび動的モデル（惑星）を描画するデモです。
@@ -59,5 +59,6 @@ VS Codeの「実行とデバッグ」機能を使用して、起動するアプ�
     * **solar_system**
     * **rocket_game**
 3. `F5` キーを押すか、再生ボタンをクリックしてアプリをビルド・実行してください。
+
 
 
