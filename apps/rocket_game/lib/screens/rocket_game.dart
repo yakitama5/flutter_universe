@@ -32,7 +32,7 @@ class _RocketGameState extends State<RocketGame> {
   static const goalPosition = 100;
 
   /// コースに配置する隕石の総数
-  static const totalAsteroids = 150;
+  static const totalAsteroids = 500;
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
@@ -79,12 +79,15 @@ class _RocketGameState extends State<RocketGame> {
     final random = Random();
     final asteroids = <Asteroid>[];
 
-    const courseWidth = 10.0;
-    const courseHeight = 10.0;
+    const courseWidth = 30.0;
+    const courseHeight = 30.0;
     const courseDepth = 100.0; // goalPositionと同じ
     const playerSize = 1.5;
     const asteroidSize = 1.0;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
+    const asteroidCollisionMargin = asteroidSize; // 隕石の直径
+    final asteroidCollisionMarginSq = pow(asteroidCollisionMargin, 2);
+
 
     // 安全な経路の制御点を生成
     const controlPointCount = 5;
@@ -110,25 +113,36 @@ class _RocketGameState extends State<RocketGame> {
         y = random.nextDouble() * courseHeight - courseHeight / 2;
         z = random.nextDouble() * courseDepth;
 
-        // z座標に基づいて安全経路の中心を補間計算
+        // --- 安全経路との衝突チェック ---
         final segmentIndex =
             (z / (courseDepth / controlPointCount)).floor().clamp(0, controlPointCount - 1);
         final startPoint = pathPoints[segmentIndex];
         final endPoint = pathPoints[segmentIndex + 1];
-
-        // セグメント内での進行度 (0.0 - 1.0)
         final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
-
         final pathX = startPoint.x + (endPoint.x - startPoint.x) * t;
         final pathY = startPoint.y + (endPoint.y - startPoint.y) * t;
+        final distanceToPathSq = pow(x - pathX, 2) + pow(y - pathY, 2);
 
-        // 隕石と安全経路の距離の2乗をチェック (x-y平面上)
-        final distanceSq = pow(x - pathX, 2) + pow(y - pathY, 2);
-
-        if (distanceSq >= pow(safeMargin, 2)) {
-          // 安全な場所に配置できたのでループを抜ける
-          break;
+        if (distanceToPathSq < pow(safeMargin, 2)) {
+          continue; // 経路と衝突するので再試行
         }
+        
+        // --- 既存の隕石との衝突チェック ---
+        bool overlapsWithOtherAsteroids = false;
+        final newPosition = Vector3(x, y, z);
+        for (final existingAsteroid in asteroids) {
+            if (existingAsteroid.position.distanceToSquared(newPosition) < asteroidCollisionMarginSq) {
+                overlapsWithOtherAsteroids = true;
+                break;
+            }
+        }
+        
+        if (overlapsWithOtherAsteroids) {
+            continue; // 他の隕石と衝突するので再試行
+        }
+
+        // 全てのチェックをクリアしたのでループを抜ける
+        break;
       }
 
       asteroids.add(
