@@ -31,8 +31,8 @@ class _RocketGameState extends State<RocketGame> {
   /// ゴールの位置
   static const goalPosition = 100;
 
-  /// 縦の分割数
-  static const asteroidLaneLength = 10;
+  /// コースに配置する隕石の総数
+  static const totalAsteroids = 150;
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
@@ -81,48 +81,67 @@ class _RocketGameState extends State<RocketGame> {
 
     const courseWidth = 10.0;
     const courseHeight = 10.0;
+    const courseDepth = 100.0; // goalPositionと同じ
     const playerSize = 1.5;
     const asteroidSize = 1.0;
-    // プレイヤーと隕石が衝突しないための安全マージン
-    // (プレイヤー半径 + 隕石半径)
     const safeMargin = playerSize / 2 + asteroidSize / 2;
 
-    // 各レーンに隕石を生成
-    for (var i = 0; i < asteroidLaneLength; i++) {
-      final z = (goalPosition / asteroidLaneLength) * (i + 1.0);
-
-      // このレーンの安全な通路の中心をランダムに決定
-      final safeX = random.nextDouble() * (courseWidth - playerSize) -
-          (courseWidth - playerSize) / 2;
-      final safeY = random.nextDouble() * (courseHeight - playerSize) -
-          (courseHeight - playerSize) / 2;
-
-      // このレーンに配置する隕石の数 (5〜9個)
-      final asteroidCount = random.nextInt(5) + 5;
-
-      for (var j = 0; j < asteroidCount; j++) {
-        double x;
-        double y;
-        do {
-          // 隕石の座標をコース内にランダムに決定
-          x = random.nextDouble() * courseWidth - courseWidth / 2;
-          y = random.nextDouble() * courseHeight - courseHeight / 2;
-          // 安全な通路と重なっていないかチェック
-        } while ((x > safeX - safeMargin && x < safeX + safeMargin) &&
-            (y > safeY - safeMargin && y < safeY + safeMargin));
-
-        asteroids.add(
-          Asteroid(
-            position: Vector3(x, y, z),
-            rotation: Quaternion.euler(
-              random.nextDouble() * 2 * pi,
-              random.nextDouble() * 2 * pi,
-              random.nextDouble() * 2 * pi,
-            ),
-            gameState: gameState!,
-          ),
-        );
+    // 安全な経路の制御点を生成
+    const controlPointCount = 5;
+    final pathPoints = List.generate(controlPointCount + 1, (i) {
+      final z = (courseDepth / controlPointCount) * i;
+      if (i == 0) {
+        return Vector3(0, 0, z); // スタートは中央
       }
+      final x = random.nextDouble() * (courseWidth - playerSize) -
+          (courseWidth - playerSize) / 2;
+      final y = random.nextDouble() * (courseHeight - playerSize) -
+          (courseHeight - playerSize) / 2;
+      return Vector3(x, y, z);
+    });
+
+    // 隕石を生成
+    for (var i = 0; i < totalAsteroids; i++) {
+      double x, y, z;
+
+      while (true) {
+        // 隕石の3D座標をコース内にランダムに決定
+        x = random.nextDouble() * courseWidth - courseWidth / 2;
+        y = random.nextDouble() * courseHeight - courseHeight / 2;
+        z = random.nextDouble() * courseDepth;
+
+        // z座標に基づいて安全経路の中心を補間計算
+        final segmentIndex =
+            (z / (courseDepth / controlPointCount)).floor().clamp(0, controlPointCount - 1);
+        final startPoint = pathPoints[segmentIndex];
+        final endPoint = pathPoints[segmentIndex + 1];
+
+        // セグメント内での進行度 (0.0 - 1.0)
+        final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
+
+        final pathX = startPoint.x + (endPoint.x - startPoint.x) * t;
+        final pathY = startPoint.y + (endPoint.y - startPoint.y) * t;
+
+        // 隕石と安全経路の距離の2乗をチェック (x-y平面上)
+        final distanceSq = pow(x - pathX, 2) + pow(y - pathY, 2);
+
+        if (distanceSq >= pow(safeMargin, 2)) {
+          // 安全な場所に配置できたのでループを抜ける
+          break;
+        }
+      }
+
+      asteroids.add(
+        Asteroid(
+          position: Vector3(x, y, z),
+          rotation: Quaternion.euler(
+            random.nextDouble() * 2 * pi,
+            random.nextDouble() * 2 * pi,
+            random.nextDouble() * 2 * pi,
+          ),
+          gameState: gameState!,
+        ),
+      );
     }
 
     scene.addAll(asteroids.map((e) => e.node));
