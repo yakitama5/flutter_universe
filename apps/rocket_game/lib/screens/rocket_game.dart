@@ -70,6 +70,10 @@ class _RocketGameState extends State<RocketGame> {
   void setupPlay() {
     setupCourse();
 
+    // 初期位置に設定
+    gameState?.player.initPosition();
+    scene.add(gameState!.player.node);
+
     setState(() {
       gameMode = GameMode.playing;
     });
@@ -88,7 +92,6 @@ class _RocketGameState extends State<RocketGame> {
     const asteroidCollisionMargin = asteroidSize; // 隕石の直径
     final asteroidCollisionMarginSq = pow(asteroidCollisionMargin, 2);
 
-
     // 安全な経路の制御点を生成
     const controlPointCount = 5;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
@@ -96,9 +99,11 @@ class _RocketGameState extends State<RocketGame> {
       if (i == 0) {
         return Vector3(0, 0, z); // スタートは中央
       }
-      final x = random.nextDouble() * (courseWidth - playerSize) -
+      final x =
+          random.nextDouble() * (courseWidth - playerSize) -
           (courseWidth - playerSize) / 2;
-      final y = random.nextDouble() * (courseHeight - playerSize) -
+      final y =
+          random.nextDouble() * (courseHeight - playerSize) -
           (courseHeight - playerSize) / 2;
       return Vector3(x, y, z);
     });
@@ -114,8 +119,9 @@ class _RocketGameState extends State<RocketGame> {
         z = random.nextDouble() * courseDepth;
 
         // --- 安全経路との衝突チェック ---
-        final segmentIndex =
-            (z / (courseDepth / controlPointCount)).floor().clamp(0, controlPointCount - 1);
+        final segmentIndex = (z / (courseDepth / controlPointCount))
+            .floor()
+            .clamp(0, controlPointCount - 1);
         final startPoint = pathPoints[segmentIndex];
         final endPoint = pathPoints[segmentIndex + 1];
         final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
@@ -126,19 +132,20 @@ class _RocketGameState extends State<RocketGame> {
         if (distanceToPathSq < pow(safeMargin, 2)) {
           continue; // 経路と衝突するので再試行
         }
-        
+
         // --- 既存の隕石との衝突チェック ---
         bool overlapsWithOtherAsteroids = false;
         final newPosition = Vector3(x, y, z);
         for (final existingAsteroid in asteroids) {
-            if (existingAsteroid.position.distanceToSquared(newPosition) < asteroidCollisionMarginSq) {
-                overlapsWithOtherAsteroids = true;
-                break;
-            }
+          if (existingAsteroid.position.distanceToSquared(newPosition) <
+              asteroidCollisionMarginSq) {
+            overlapsWithOtherAsteroids = true;
+            break;
+          }
         }
-        
+
         if (overlapsWithOtherAsteroids) {
-            continue; // 他の隕石と衝突するので再試行
+          continue; // 他の隕石と衝突するので再試行
         }
 
         // 全てのチェックをクリアしたのでループを抜ける

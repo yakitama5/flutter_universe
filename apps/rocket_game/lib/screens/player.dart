@@ -10,6 +10,9 @@ class KinematicPlayer {
     node = ResourceCache.getModel(AssetModel.starship);
   }
 
+  /// キャラのスケール
+  static const double playerScale = 0.5;
+
   late Node node;
 
   /// 1/n seconds from zero velocity to full velocity.
@@ -53,6 +56,14 @@ class KinematicPlayer {
   double groundedWeight = 1;
   double jumpStartWeight = 0;
   double landingWeight = 0;
+
+  void initPosition() {
+    final translation = Vector3(0, 0, 0);
+    final rotation = Quaternion.euler(math.pi, 0, 0);
+    final scale = Vector3(playerScale, playerScale, -playerScale);
+    final transfrom = Matrix4.compose(translation, rotation, scale);
+    node.globalTransform = transfrom;
+  }
 
   void updateNode() {
     node.visible = damageCooldown % 0.2 <= 0.12;

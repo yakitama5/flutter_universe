@@ -15,8 +15,8 @@ class FollowCamera {
   static const double kOverviewRadius = 10;
   static final Vector3 kOverviewCameraPosition = Vector3(5, 50, -70);
 
-  Vector3 position = Vector3(0, 3, -5);
-  Vector3 target = Vector3.zero();
+  Vector3 position = Vector3(0, 5, -10);
+  Vector3 target = Vector3(0, 0, 10);
 
   Camera get camera => PerspectiveCamera(position: position, target: target);
 
