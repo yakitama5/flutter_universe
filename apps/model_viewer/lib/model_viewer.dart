@@ -67,22 +67,25 @@ class ModelViewerState extends State<ModelViewer> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // モデルを更新
+    // モデルの位置を座標指定
     final translation = Vector3(
       viewerState.modelPositionX,
       viewerState.modelPositionY,
       viewerState.modelPositionZ,
     );
+    // モデルの角度をオイラー角で指定
     final rotation = Quaternion.euler(
+      viewerState.modelRotationX,
       viewerState.modelRotationY,
       viewerState.modelRotationZ,
-      viewerState.modelRotationX,
     );
+    // モデルのスケールを指定
     final scale = Vector3(
       viewerState.modelScale,
       viewerState.modelScale,
       -viewerState.modelScale, // 表示面が逆転するので、Z軸は反転させる
     );
+
     // `globalTransform`を変更して反映する
     dashModel.globalTransform = Matrix4.compose(translation, rotation, scale);
 
