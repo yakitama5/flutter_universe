@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
@@ -66,22 +68,64 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   void setupPlay() {
-    final asteroids = List.generate(asteroidLaneLength, (i) {
-      final z = (goalPosition / asteroidLaneLength) * (i + 1);
-
-      return Asteroid(
-        position: Vector3(0, 0, z),
-        rotation: Quaternion.euler(0, 0, 0),
-        gameState: gameState!,
-      );
-    });
-
-    scene.addAll(asteroids.map((e) => e.node));
-    // scene.add(ResourceCache.getModel(AssetModel.starship));
+    setupCourse();
 
     setState(() {
       gameMode = GameMode.playing;
     });
+  }
+
+  void setupCourse() {
+    final random = Random();
+    final asteroids = <Asteroid>[];
+
+    const courseWidth = 10.0;
+    const courseHeight = 10.0;
+    const playerSize = 1.5;
+    const asteroidSize = 1.0;
+    // プレイヤーと隕石が衝突しないための安全マージン
+    // (プレイヤー半径 + 隕石半径)
+    const safeMargin = playerSize / 2 + asteroidSize / 2;
+
+    // 各レーンに隕石を生成
+    for (var i = 0; i < asteroidLaneLength; i++) {
+      final z = (goalPosition / asteroidLaneLength) * (i + 1.0);
+
+      // このレーンの安全な通路の中心をランダムに決定
+      final safeX = random.nextDouble() * (courseWidth - playerSize) -
+          (courseWidth - playerSize) / 2;
+      final safeY = random.nextDouble() * (courseHeight - playerSize) -
+          (courseHeight - playerSize) / 2;
+
+      // このレーンに配置する隕石の数 (5〜9個)
+      final asteroidCount = random.nextInt(5) + 5;
+
+      for (var j = 0; j < asteroidCount; j++) {
+        double x;
+        double y;
+        do {
+          // 隕石の座標をコース内にランダムに決定
+          x = random.nextDouble() * courseWidth - courseWidth / 2;
+          y = random.nextDouble() * courseHeight - courseHeight / 2;
+          // 安全な通路と重なっていないかチェック
+        } while ((x > safeX - safeMargin && x < safeX + safeMargin) &&
+            (y > safeY - safeMargin && y < safeY + safeMargin));
+
+        asteroids.add(
+          Asteroid(
+            position: Vector3(x, y, z),
+            rotation: Quaternion.euler(
+              random.nextDouble() * 2 * pi,
+              random.nextDouble() * 2 * pi,
+              random.nextDouble() * 2 * pi,
+            ),
+            gameState: gameState!,
+          ),
+        );
+      }
+    }
+
+    scene.addAll(asteroids.map((e) => e.node));
   }
 
   void resetTimer() {
