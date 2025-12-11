@@ -29,7 +29,7 @@ class _RocketGameState extends State<RocketGame> {
   double deltaSeconds = 0;
 
   /// ゴールの位置
-  static const goalPosition = 100;
+  static const goalPosition = 300;
 
   /// コースに配置する隕石の総数
   static const totalAsteroids = 500;
@@ -81,7 +81,7 @@ class _RocketGameState extends State<RocketGame> {
 
     const courseWidth = 30.0;
     const courseHeight = 30.0;
-    const courseDepth = 100.0; // goalPositionと同じ
+    const courseDepth = 300.0; // goalPositionと同じ
     const playerSize = 1.5;
     const asteroidSize = 1.0;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
