@@ -4,11 +4,11 @@ import 'package:rocket_game/screens/game_state.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
-/// 小惑星を管理するクラス
-class Asteroid {
+/// 障害物を管理するクラス
+class Spike {
   static const radius = 1.5;
 
-  Asteroid({
+  Spike({
     required this.position,
     required this.rotation,
     required this.gameState,

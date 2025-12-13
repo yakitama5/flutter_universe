@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/screens/asteroid.dart';
 import 'package:rocket_game/screens/camera.dart';
 import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/game_state.dart';
 import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:rocket_game/screens/scene_painter.dart';
+import 'package:rocket_game/screens/spike.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
@@ -36,7 +36,7 @@ class _RocketGameState extends State<RocketGame> {
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
-  List<Asteroid> asteroids = [];
+  List<Spike> asteroids = [];
   GameState? gameState;
 
   int lastScore = 0;
@@ -161,7 +161,7 @@ class _RocketGameState extends State<RocketGame> {
       );
 
       asteroids.add(
-        Asteroid(
+        Spike(
           // 全て Asteroid として生成
           position: newPosition,
           rotation: newRotation,
