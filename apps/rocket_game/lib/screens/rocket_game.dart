@@ -28,6 +28,8 @@ class _RocketGameState extends State<RocketGame> {
     color: Colors.white,
     fontSize: 24,
     fontWeight: FontWeight.bold,
+    // 表示がちらつくので等幅表示
+    fontFeatures: [FontFeature.tabularFigures()],
   );
   static const _congratsTextStyle = TextStyle(
     color: Colors.white,
@@ -96,6 +98,10 @@ class _RocketGameState extends State<RocketGame> {
 
     // 新規にプレイ時のセットアップを行う
     setupPlay();
+    setState(() {
+      gameMode = GameMode.playing;
+      isTimerRunning = true;
+    });
     _isRestarting = false;
   }
 
@@ -131,8 +137,6 @@ class _RocketGameState extends State<RocketGame> {
 
     setState(() {
       gameplayTime = 0.0;
-      isTimerRunning = true;
-      gameMode = GameMode.playing;
     });
   }
 
@@ -250,7 +254,14 @@ class _RocketGameState extends State<RocketGame> {
 
     if (gameState != null) {
       final player = gameState!.player;
-      if (gameMode == GameMode.playing) {
+      if (gameMode == GameMode.startMenu) {
+        if (inputActions.enter) {
+          setState(() {
+            gameMode = GameMode.playing;
+            isTimerRunning = true;
+          });
+        }
+      } else if (gameMode == GameMode.playing) {
         inputActions.updatePlayer(player);
         player.updatePlaying(deltaSeconds);
       } else if (gameMode == GameMode.finish) {
@@ -297,6 +308,15 @@ class _RocketGameState extends State<RocketGame> {
                 Text('Congratulations!', style: _congratsTextStyle),
                 SizedBox(height: 20),
                 Text('Press Space to Restart', style: _restartTextStyle),
+              ],
+            ),
+          ),
+        if (gameMode == GameMode.startMenu)
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text('Press Space to Start', style: _restartTextStyle),
               ],
             ),
           ),
