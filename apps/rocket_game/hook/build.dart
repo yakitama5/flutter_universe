@@ -9,9 +9,9 @@ void main(List<String> args) async {
         'assets/glb/dash.glb',
         'assets/glb/spike.glb',
         'assets/glb/background.glb',
-        'assets/glb/asteroid1.glb',
-        'assets/glb/asteroid2.glb',
-        'assets/glb/starship.glb',
+        'assets/glb/tunnel.glb',
+        'assets/glb/portal.glb',
+        // 'assets/glb/asteroid1.glb',
       ],
     );
   });

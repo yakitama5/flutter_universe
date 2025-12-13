@@ -6,7 +6,7 @@ import 'package:vector_math/vector_math.dart';
 
 /// 障害物を管理するクラス
 class Spike {
-  static const radius = 1.5;
+  static const radius = 1.2;
 
   Spike({
     required this.position,
@@ -28,7 +28,7 @@ class Spike {
   void update() {
     /// プレイヤーとの衝突判定を監視
     final distance =
-        (gameState.player.position + Vector3(0, 1, 0) - position).length;
+        (gameState.player.position + Vector3(0, 0.0, 0) - position).length;
     if (distance < radius) {
       // プレイヤーにダメージを与える
       gameState.player.takeDamage();

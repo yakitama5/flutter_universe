@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/models/enum/asset_model.dart';
+import 'package:rocket_game/screens/background.dart';
 import 'package:rocket_game/screens/camera.dart';
 import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/game_state.dart';
@@ -12,6 +12,7 @@ import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:rocket_game/screens/scene_painter.dart';
 import 'package:rocket_game/screens/spike.dart';
+import 'package:rocket_game/screens/tunnel.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
@@ -31,7 +32,7 @@ class _RocketGameState extends State<RocketGame> {
   double deltaSeconds = 0;
 
   /// コースに配置する隕石の総数
-  static const totalAsteroids = 150;
+  static const totalAsteroids = 300;
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
@@ -57,7 +58,10 @@ class _RocketGameState extends State<RocketGame> {
     resetTimer();
 
     ResourceCache.preloadAll().then((_) {
-      scene.add(ResourceCache.getModel(AssetModel.background));
+      scene.add(Background().node);
+      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength)).node);
+      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 2)).node);
+      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 3)).node);
       gameState = GameState(
         scene: scene,
         player: KinematicPlayer(),
@@ -93,14 +97,14 @@ class _RocketGameState extends State<RocketGame> {
 
     const courseWidth = 10.0;
     const courseHeight = 10.0;
-    const playerSize = 1.5;
-    const asteroidSize = 1.0;
+    const playerSize = 1.0;
+    const asteroidSize = 0.6;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
     const asteroidCollisionMargin = asteroidSize; // 隕石の直径
     final asteroidCollisionMarginSq = pow(asteroidCollisionMargin, 2);
 
     // 安全な経路の制御点を生成
-    const controlPointCount = 5;
+    const controlPointCount = 2;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
       final z = (Goal.kGoalPositionZ / controlPointCount) * i;
       if (i == 0) {
