@@ -5,39 +5,57 @@ import 'package:rocket_game/screens/math_utils.dart';
 import 'package:vector_math/vector_math.dart';
 
 class FollowCamera {
-  static final Vector3 kFollowOffset = Vector3(0, 10, -12);
+  static final Vector3 kFollowOffset = Vector3(0, 0, -5);
+  static const double kPlayerBoundary = 5.0;
+  static final Vector3 kFramingOffset = Vector3(3, 2, 0);
 
-  static final Vector3 kLogoArea = Vector3(0, 5, 15);
-  static const double kLogoRadius = 11;
-  static final Vector3 kLogoFollowOffset = Vector3(0, -2, -25) * 1;
-
-  static final Vector3 kOverviewArea = Vector3(-20, 0, 24);
-  static const double kOverviewRadius = 10;
-  static final Vector3 kOverviewCameraPosition = Vector3(5, 50, -70);
-
-  Vector3 position = Vector3(0, 5, -10);
+  Vector3 position = Vector3(0, 5, -5);
   Vector3 target = Vector3(0, 0, 10);
 
   Camera get camera => PerspectiveCamera(position: position, target: target);
 
   void updateGameplay(
-    Vector3 cameraTarget,
+    Vector3 playerPosition,
     Vector3 movementDirection,
     double deltaSeconds,
   ) {
-    Vector3 destinationPosition =
-        target + kFollowOffset * (1 + movementDirection.length / 15);
+    // Calculate player's relative position within the boundaries [-1, 1]
+    final double relativeX = playerPosition.x / kPlayerBoundary;
+    final double relativeY = playerPosition.y / kPlayerBoundary;
 
-    Vector3 destinationTarget =
-        cameraTarget + Vector3(0, 2, 0) + movementDirection * 0.6;
+    // Calculate a dynamic target for framing, this is where the camera wants to center.
+    final Vector3 framingTarget =
+        playerPosition.clone() -
+        Vector3(
+          relativeX * kFramingOffset.x,
+          relativeY * kFramingOffset.y,
+          0,
+        );
 
+    // The actual point the camera looks at is ahead of the framing target.
+    final Vector3 destinationTarget = framingTarget + Vector3(0, 0, 30);
+
+    // The camera's position is offset from the framing target.
+    final Vector3 destinationPosition = framingTarget + kFollowOffset;
+
+    // Use a stronger lerp for the target to make the camera feel more responsive
+    // to where the player is, but a weaker lerp for the position to smooth
+    // out the movement.
+    final double targetLerp = 0.1;
+    final double positionLerp = 0.08;
+
+    target = vector3LerpDeltaTime(
+      target,
+      destinationTarget,
+      targetLerp,
+      deltaSeconds,
+    );
     position = vector3LerpDeltaTime(
       position,
       destinationPosition,
-      0.1,
+      positionLerp,
       deltaSeconds,
     );
-    target = vector3LerpDeltaTime(target, destinationTarget, 0.1, deltaSeconds);
   }
 
   void updateOverview(double deltaSeconds, double timeElapsed) {

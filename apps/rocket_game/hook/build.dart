@@ -6,6 +6,8 @@ void main(List<String> args) async {
     buildModels(
       buildInput: config,
       inputFilePaths: [
+        'assets/glb/dash.glb',
+        'assets/glb/spike.glb',
         'assets/glb/asteroid1.glb',
         'assets/glb/asteroid2.glb',
         'assets/glb/starship.glb',

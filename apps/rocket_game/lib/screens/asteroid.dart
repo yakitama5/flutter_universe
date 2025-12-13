@@ -12,7 +12,7 @@ class Asteroid {
     required this.position,
     required this.rotation,
     required this.gameState,
-    AssetModel assetModel = AssetModel.asteroid1,
+    AssetModel assetModel = AssetModel.spike,
   }) {
     // 生成時に位置と回転角度を決定する
     final transform = Matrix4.compose(position, rotation, Vector3(1, 1, -1));

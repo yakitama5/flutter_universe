@@ -7,7 +7,7 @@ import 'package:vector_math/vector_math.dart';
 
 class KinematicPlayer {
   KinematicPlayer() {
-    node = ResourceCache.getModel(AssetModel.starship);
+    node = ResourceCache.getModel(AssetModel.dash);
     idleAnimation = node.createAnimationClip(node.findAnimationByName("Idle")!)
       ..loop = true
       ..play();
@@ -31,10 +31,10 @@ class KinematicPlayer {
   static const double kInitialVelocityZ = 1.0;
 
   ///　加速度（秒間）
-  static const double kAccelerationZ = 2.0;
+  static const double kAccelerationZ = 3.0;
 
   /// 最高速度
-  static const double kMaxVelocityZ = 10.0;
+  static const double kMaxVelocityZ = 30.0;
 
   // Dashくんのアニメーション関連で利用する定数
   static const double initialPlaybackTimeScale = 0.5;
@@ -73,22 +73,20 @@ class KinematicPlayer {
   }
 
   void updateNode() {
+    // ダメージ表現
     node.visible = damageCooldown % 0.2 <= 0.12;
 
-    // Base rotation to point forward along +Z
-    var rotation = Quaternion.identity();
+    // 移動中の傾き
+    final roll = _inputDirection.x * 0.4;
+    final pitch = _inputDirection.y * -0.4;
+    final rotation = Quaternion.euler(roll, pitch, 0);
 
-    final roll = _inputDirection.x * 0.2;
-    final pitch = _inputDirection.y * 0.2;
-    final bankRotation = Quaternion.euler(math.pi + roll, pitch, 0);
-    rotation = bankRotation * rotation;
-
+    // モデルへの反映
     final transform = Matrix4.compose(
       _position,
       rotation,
       Vector3(playerScale, playerScale, -playerScale),
     );
-
     node.globalTransform = transform;
   }
 
