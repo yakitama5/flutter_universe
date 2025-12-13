@@ -45,7 +45,8 @@ class KinematicPlayer {
   late AnimationClip runAnimation;
   double runPlaybackTimeScale = initialPlaybackTimeScale;
 
-  Vector3 _position = Vector3.zero();
+  static final Vector3 initialPosition = Vector3(0, 0, -10);
+  Vector3 _position = initialPosition;
   Vector3 get position => _position;
 
   // No longer needed for rotation, but useful for camera/other logic
@@ -68,7 +69,7 @@ class KinematicPlayer {
   double damageCooldown = 0;
 
   void initPosition() {
-    _position = Vector3.zero();
+    _position = initialPosition;
     _velocityZ = kInitialVelocityZ;
     updateNode();
   }
