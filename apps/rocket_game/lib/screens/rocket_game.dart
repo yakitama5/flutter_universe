@@ -6,6 +6,7 @@ import 'package:flutter_scene/scene.dart';
 import 'package:rocket_game/screens/camera.dart';
 import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/game_state.dart';
+import 'package:rocket_game/screens/goal.dart';
 import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:rocket_game/screens/scene_painter.dart';
@@ -28,9 +29,6 @@ class _RocketGameState extends State<RocketGame> {
   double time = 0;
   double deltaSeconds = 0;
 
-  /// ゴールの位置
-  static const goalPosition = 300;
-
   /// コースに配置する隕石の総数
   static const totalAsteroids = 150;
 
@@ -38,6 +36,7 @@ class _RocketGameState extends State<RocketGame> {
   final FollowCamera camera = FollowCamera();
   List<Spike> asteroids = [];
   GameState? gameState;
+  late Goal goal;
 
   int lastScore = 0;
 
@@ -75,6 +74,12 @@ class _RocketGameState extends State<RocketGame> {
     gameState?.player.initPosition();
     scene.add(gameState!.player.node);
 
+    goal = Goal(
+      gameState: gameState!,
+      onFinished: () {},
+    );
+    scene.add(goal.node);
+
     setState(() {
       gameMode = GameMode.playing;
     });
@@ -84,9 +89,8 @@ class _RocketGameState extends State<RocketGame> {
     final random = Random();
     final allAsteroidPositions = <Vector3>[];
 
-    const courseWidth = 10.0; // 10x10に戻す
-    const courseHeight = 10.0; // 10x10に戻す
-    const courseDepth = 300.0; // goalPositionと同じ
+    const courseWidth = 10.0;
+    const courseHeight = 10.0;
     const playerSize = 1.5;
     const asteroidSize = 1.0;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
@@ -96,7 +100,7 @@ class _RocketGameState extends State<RocketGame> {
     // 安全な経路の制御点を生成
     const controlPointCount = 5;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
-      final z = (courseDepth / controlPointCount) * i;
+      final z = (Goal.kGoalPositionZ / controlPointCount) * i;
       if (i == 0) {
         return Vector3(0, 0, z); // スタートは中央
       }
@@ -119,11 +123,11 @@ class _RocketGameState extends State<RocketGame> {
         final y =
             random.nextDouble() * courseHeight -
             courseHeight / 2; // 10x10の範囲で生成
-        final z = random.nextDouble() * courseDepth;
+        final z = random.nextDouble() * Goal.kGoalPositionZ;
         newPosition = Vector3(x, y, z);
 
         // 安全経路との衝突チェック (常に内部エリアなので常にチェック)
-        final segmentIndex = (z / (courseDepth / controlPointCount))
+        final segmentIndex = (z / (Goal.kGoalPositionZ / controlPointCount))
             .floor()
             .clamp(0, controlPointCount - 1);
         final startPoint = pathPoints[segmentIndex];
@@ -192,6 +196,7 @@ class _RocketGameState extends State<RocketGame> {
       final player = gameState!.player;
       inputActions.updatePlayer(player);
       player.update(deltaSeconds);
+      goal.update();
       camera.updateGameplay(
         player.position,
         Vector3(player.velocityXY.x, 0, player.velocityZ),

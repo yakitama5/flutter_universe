@@ -7,8 +7,6 @@ class GameState {
     required this.player,
   });
 
-  static const kTimeLimit = 60; // Seconds.
-
   final Scene scene;
   final KinematicPlayer player;
 }

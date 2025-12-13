@@ -27,8 +27,7 @@ class InputActions {
   bool absorbKeyEvents = false;
   Vector2 inputDirection = Vector2.zero();
 
-  bool jump = false;
-  bool skipToEnd = false;
+  bool enter = false;
 
   void updatePlayer(KinematicPlayer player) {
     player.inputDirection = inputDirection;
@@ -41,14 +40,10 @@ class InputActions {
       if (keyboardInputState.containsKey(key)) {
         keyboardInputState[key] = 1;
       }
-      print("Key down: $key, new state: ${keyboardInputState[key]}");
     } else if (event is KeyUpEvent) {
       if (keyboardInputState.containsKey(key)) {
         keyboardInputState[key] = 0;
       }
-      print("Key up: $key, new state: ${keyboardInputState[key]}");
-    } else if (event is KeyRepeatEvent) {
-      print("Key repeat: $key");
     }
 
     inputDirection =
@@ -64,7 +59,7 @@ class InputActions {
               .toDouble(),
         );
 
-    jump = keyboardInputState[" "]! > 0;
+    enter = keyboardInputState[" "]! > 0;
 
     return absorbKeyEvents && keyboardInputState.containsKey(key);
   }
