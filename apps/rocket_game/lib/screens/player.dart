@@ -124,6 +124,22 @@ class KinematicPlayer {
     // Displace.
     _position += velocity * deltaSeconds;
 
+    // Apply X-axis boundary checks
+    const double kXBoundary = 5.0;
+    if (_position.x > kXBoundary) {
+      _position.x = kXBoundary;
+    } else if (_position.x < -kXBoundary) {
+      _position.x = -kXBoundary;
+    }
+
+    // Apply Y-axis boundary checks
+    const double kYBoundary = 5.0;
+    if (_position.y > kYBoundary) {
+      _position.y = kYBoundary;
+    } else if (_position.y < -kYBoundary) {
+      _position.y = -kYBoundary;
+    }
+
     updateNode();
   }
 }
