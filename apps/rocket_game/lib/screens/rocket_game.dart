@@ -91,11 +91,10 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   void restartGame() {
-    // Clear old objects
+    // シーン内のオブジェクトを一旦削除
     scene.removeAll();
-    asteroids.clear();
 
-    // Setup a new game
+    // 新規にプレイ時のセットアップを行う
     setupPlay();
     _isRestarting = false;
   }
@@ -105,6 +104,10 @@ class _RocketGameState extends State<RocketGame> {
     scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength)).node);
     scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 2)).node);
     scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 3)).node);
+
+    // カメラの切り替わりを即時にするため、リセット処理を行う
+    camera.reset();
+
     gameState = GameState(
       scene: scene,
       player: KinematicPlayer(),

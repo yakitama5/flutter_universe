@@ -14,6 +14,13 @@ class FollowCamera {
 
   Camera get camera => PerspectiveCamera(position: position, target: target);
 
+  void reset() {
+    // Instantly snap camera to the starting position behind the player at origin
+    final Vector3 framingTarget = Vector3.zero();
+    position = framingTarget + kFollowOffset;
+    target = framingTarget + Vector3(0, 0, 30);
+  }
+
   void updateGameplay(
     Vector3 playerPosition,
     Vector3 movementDirection,
