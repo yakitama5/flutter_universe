@@ -51,6 +51,27 @@ melos:
         post: melos exec --flutter --concurrency=3 -- "flutter clean"
 
   scripts:
+    # ビルド関連
+    build:app: 
+      description: 各アプリをMacOS向けにビルドする
+      stpes: 
+        - build:app:modelViewer
+        - build:app:solarSystem
+        - build:app:rocketGame
+
+    build:app:modelViewer:
+      description: ModelViewerをMacOS向けにビルドする
+      run: 
+        melos exec --scope="model_viewer" -- flutter build macos
+    build:app:solarSystem:
+      description: SolarSystemをMacOS向けにビルドする
+      run: 
+        melos exec --scope="solar_system" -- flutter build macos
+    build:app:rocketGame:
+      description: RocketGameをMacOS向けにビルドする
+      run: 
+        melos exec --scope="rocket_game" -- flutter build macos
+
     # dart fix関連
     fix:
       exec: dart fix --apply lib
