@@ -1,6 +1,6 @@
 import 'package:flutter_scene/scene.dart';
 import 'package:rocket_game/models/enum/asset_model.dart';
-import 'package:rocket_game/screens/game.dart';
+import 'package:rocket_game/screens/game_state.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 

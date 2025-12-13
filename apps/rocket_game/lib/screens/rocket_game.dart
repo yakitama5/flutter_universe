@@ -5,8 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:rocket_game/screens/asteroid.dart';
 import 'package:rocket_game/screens/camera.dart';
-import 'package:rocket_game/screens/game.dart';
 import 'package:rocket_game/screens/game_mode.dart';
+import 'package:rocket_game/screens/game_state.dart';
 import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:rocket_game/screens/scene_painter.dart';
@@ -102,9 +102,11 @@ class _RocketGameState extends State<RocketGame> {
       if (i == 0) {
         return Vector3(0, 0, z); // スタートは中央
       }
-      final x = random.nextDouble() * (courseWidth - playerSize) -
+      final x =
+          random.nextDouble() * (courseWidth - playerSize) -
           (courseWidth - playerSize) / 2;
-      final y = random.nextDouble() * (courseHeight - playerSize) -
+      final y =
+          random.nextDouble() * (courseHeight - playerSize) -
           (courseHeight - playerSize) / 2;
       return Vector3(x, y, z);
     });
@@ -114,14 +116,18 @@ class _RocketGameState extends State<RocketGame> {
       Vector3 newPosition;
 
       while (true) {
-        final x = random.nextDouble() * courseWidth - courseWidth / 2; // 10x10の範囲で生成
-        final y = random.nextDouble() * courseHeight - courseHeight / 2; // 10x10の範囲で生成
+        final x =
+            random.nextDouble() * courseWidth - courseWidth / 2; // 10x10の範囲で生成
+        final y =
+            random.nextDouble() * courseHeight -
+            courseHeight / 2; // 10x10の範囲で生成
         final z = random.nextDouble() * courseDepth;
         newPosition = Vector3(x, y, z);
 
         // 安全経路との衝突チェック (常に内部エリアなので常にチェック)
-        final segmentIndex =
-            (z / (courseDepth / controlPointCount)).floor().clamp(0, controlPointCount - 1);
+        final segmentIndex = (z / (courseDepth / controlPointCount))
+            .floor()
+            .clamp(0, controlPointCount - 1);
         final startPoint = pathPoints[segmentIndex];
         final endPoint = pathPoints[segmentIndex + 1];
         final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
@@ -156,7 +162,8 @@ class _RocketGameState extends State<RocketGame> {
         random.nextDouble() * 2 * pi,
       );
 
-      final asteroid = Asteroid( // 全て Asteroid として生成
+      final asteroid = Asteroid(
+        // 全て Asteroid として生成
         position: newPosition,
         rotation: newRotation,
         gameState: gameState!,
@@ -182,6 +189,17 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   Widget build(BuildContext context) {
+    inputActions.updatePlayer(gameState!.player);
+    gameState?.player.update(deltaSeconds);
+    if (gameState != null) {
+      final player = gameState!.player;
+      camera.updateGameplay(
+        player.position,
+        Vector3(player.velocityXY.x, 0, player.velocityZ),
+        deltaSeconds,
+      );
+    }
+
     return SizedBox.expand(
       child: CustomPaint(
         painter: RocketScenePainter(scene: scene, camera: camera.camera),
