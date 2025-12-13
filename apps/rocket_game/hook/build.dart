@@ -11,7 +11,6 @@ void main(List<String> args) async {
         'assets/glb/background.glb',
         'assets/glb/tunnel.glb',
         'assets/glb/portal.glb',
-        // 'assets/glb/asteroid1.glb',
       ],
     );
   });
