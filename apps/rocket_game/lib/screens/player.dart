@@ -38,6 +38,7 @@ class KinematicPlayer {
 
   // Dashくんのアニメーション関連で利用する定数
   static const double initialPlaybackTimeScale = 0.5;
+  static const double kMaxPlaybackTimeScale = 2.5;
 
   // Dashくんのアニメーション関連で利用する変数
   late AnimationClip idleAnimation;
@@ -111,6 +112,13 @@ class KinematicPlayer {
       kMaxVelocityZ,
       _velocityZ + kAccelerationZ * deltaSeconds,
     );
+
+    // Link animation speed to Z-velocity
+    final speedProgress =
+        (_velocityZ - kInitialVelocityZ) / (kMaxVelocityZ - kInitialVelocityZ);
+    runAnimation.playbackTimeScale =
+        initialPlaybackTimeScale +
+        (kMaxPlaybackTimeScale - initialPlaybackTimeScale) * speedProgress;
 
     // Combine velocities
     Vector3 velocity = Vector3(
