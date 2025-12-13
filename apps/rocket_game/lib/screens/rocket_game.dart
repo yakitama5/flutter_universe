@@ -97,6 +97,7 @@ class _RocketGameState extends State<RocketGame> {
 
     const courseWidth = 10.0;
     const courseHeight = 10.0;
+    const courseLength = Goal.kGoalPositionZ - 40;
     const playerSize = 1.0;
     const asteroidSize = 0.6;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
@@ -106,7 +107,7 @@ class _RocketGameState extends State<RocketGame> {
     // 安全な経路の制御点を生成
     const controlPointCount = 2;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
-      final z = (Goal.kGoalPositionZ / controlPointCount) * i;
+      final z = (courseLength / controlPointCount) * i;
       if (i == 0) {
         return Vector3(0, 0, z); // スタートは中央
       }
@@ -129,11 +130,11 @@ class _RocketGameState extends State<RocketGame> {
         final y =
             random.nextDouble() * courseHeight -
             courseHeight / 2; // 10x10の範囲で生成
-        final z = random.nextDouble() * Goal.kGoalPositionZ;
+        final z = random.nextDouble() * courseLength;
         newPosition = Vector3(x, y, z);
 
         // 安全経路との衝突チェック (常に内部エリアなので常にチェック)
-        final segmentIndex = (z / (Goal.kGoalPositionZ / controlPointCount))
+        final segmentIndex = (z / (courseLength / controlPointCount))
             .floor()
             .clamp(0, controlPointCount - 1);
         final startPoint = pathPoints[segmentIndex];

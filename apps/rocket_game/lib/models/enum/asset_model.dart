@@ -4,7 +4,7 @@ enum AssetModel {
   spike('build/models/spike.model'),
   background('build/models/background.model', unlit: true),
   tunnel('build/models/tunnel.model'),
-  portal('build/models/portal.model', unlit: true),
+  portal('build/models/portal.model'),
   ;
 
   final String path;

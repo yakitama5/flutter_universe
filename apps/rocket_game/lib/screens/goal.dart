@@ -16,14 +16,15 @@ class Goal {
   }) {
     // 生成時に位置と回転角度を決定する
     final transform = Matrix4.compose(
-      Vector3(0, 0, 0),
+      Vector3(0, -8, kGoalPositionZ),
       Quaternion.euler(math.pi, 0, 0),
-      Vector3(1, 1, -1),
+      Vector3(_scale, _scale, -_scale),
     );
     node = ResourceCache.getModel(assetModel)..globalTransform = transform;
   }
 
-  static const double kGoalPositionZ = 340;
+  static const double _scale = 6;
+  static const double kGoalPositionZ = 450;
 
   final VoidCallback onFinished;
 
