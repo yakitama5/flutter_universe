@@ -10,7 +10,6 @@ import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/input_actions.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:rocket_game/screens/scene_painter.dart';
-import 'package:rocket_game/screens/scenery_asteroid.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
@@ -33,7 +32,7 @@ class _RocketGameState extends State<RocketGame> {
   static const goalPosition = 300;
 
   /// コースに配置する隕石の総数
-  static const totalAsteroids = 500;
+  static const totalAsteroids = 150;
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
@@ -81,68 +80,60 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   void setupCourse() {
-    const innerCourseWidth = 10.0;
-    const innerCourseHeight = 10.0;
-    const outerCourseWidth = 50.0;
-    const outerCourseHeight = 50.0;
+    final random = Random();
+    final allAsteroidPositions = <Vector3>[];
+    final sceneNodes = <Node>[];
+    // GameStateが衝突判定を行うには、このリストが必要になる可能性があります。
+    // final collidableAsteroids = <Asteroid>[];
+
+    const courseWidth = 10.0; // 10x10に戻す
+    const courseHeight = 10.0; // 10x10に戻す
     const courseDepth = 300.0; // goalPositionと同じ
     const playerSize = 1.5;
     const asteroidSize = 1.0;
     const safeMargin = playerSize / 2 + asteroidSize / 2;
     const asteroidCollisionMargin = asteroidSize; // 隕石の直径
-    const controlPointCount = 5;
-
-    final random = Random();
-    final allAsteroidPositions = <Vector3>[];
-    final sceneNodes = <Node>[];
     final asteroidCollisionMarginSq = pow(asteroidCollisionMargin, 2);
 
+    // 安全な経路の制御点を生成
+    const controlPointCount = 5;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
       final z = (courseDepth / controlPointCount) * i;
-
       if (i == 0) {
         return Vector3(0, 0, z); // スタートは中央
       }
-
-      final x =
-          random.nextDouble() * (innerCourseWidth - playerSize) -
-          (innerCourseWidth - playerSize) / 2;
-      final y =
-          random.nextDouble() * (innerCourseHeight - playerSize) -
-          (innerCourseHeight - playerSize) / 2;
-
+      final x = random.nextDouble() * (courseWidth - playerSize) -
+          (courseWidth - playerSize) / 2;
+      final y = random.nextDouble() * (courseHeight - playerSize) -
+          (courseHeight - playerSize) / 2;
       return Vector3(x, y, z);
     });
 
     // 隕石を生成
     for (var i = 0; i < totalAsteroids; i++) {
       Vector3 newPosition;
-      bool isInsideInnerArea;
 
       while (true) {
-        final x = (random.nextDouble() - 0.5) * outerCourseWidth;
-        final y = (random.nextDouble() - 0.5) * outerCourseHeight;
+        final x = random.nextDouble() * courseWidth - courseWidth / 2; // 10x10の範囲で生成
+        final y = random.nextDouble() * courseHeight - courseHeight / 2; // 10x10の範囲で生成
         final z = random.nextDouble() * courseDepth;
         newPosition = Vector3(x, y, z);
 
-        isInsideInnerArea =
-            x.abs() < innerCourseWidth / 2 && y.abs() < innerCourseHeight / 2;
-        if (isInsideInnerArea) {
-          final segmentIndex = (z / (courseDepth / controlPointCount))
-              .floor()
-              .clamp(0, controlPointCount - 1);
-          final startPoint = pathPoints[segmentIndex];
-          final endPoint = pathPoints[segmentIndex + 1];
-          final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
-          final pathX = startPoint.x + (endPoint.x - startPoint.x) * t;
-          final pathY = startPoint.y + (endPoint.y - startPoint.y) * t;
-          final distanceToPathSq = pow(x - pathX, 2) + pow(y - pathY, 2);
+        // 安全経路との衝突チェック (常に内部エリアなので常にチェック)
+        final segmentIndex =
+            (z / (courseDepth / controlPointCount)).floor().clamp(0, controlPointCount - 1);
+        final startPoint = pathPoints[segmentIndex];
+        final endPoint = pathPoints[segmentIndex + 1];
+        final t = (z - startPoint.z) / (endPoint.z - startPoint.z);
+        final pathX = startPoint.x + (endPoint.x - startPoint.x) * t;
+        final pathY = startPoint.y + (endPoint.y - startPoint.y) * t;
+        final distanceToPathSq = pow(x - pathX, 2) + pow(y - pathY, 2);
 
-          if (distanceToPathSq < pow(safeMargin, 2)) {
-            continue;
-          }
+        if (distanceToPathSq < pow(safeMargin, 2)) {
+          continue;
         }
 
+        // 既存の全隕石との衝突チェック
         bool overlaps = false;
         for (final existingPosition in allAsteroidPositions) {
           if (existingPosition.distanceToSquared(newPosition) <
@@ -151,37 +142,27 @@ class _RocketGameState extends State<RocketGame> {
             break;
           }
         }
-
         if (overlaps) {
           continue;
         }
+
         break;
       }
 
       allAsteroidPositions.add(newPosition);
-
       final newRotation = Quaternion.euler(
         random.nextDouble() * 2 * pi,
         random.nextDouble() * 2 * pi,
         random.nextDouble() * 2 * pi,
       );
 
-      if (isInsideInnerArea) {
-        final asteroid = Asteroid(
-          position: newPosition,
-          rotation: newRotation,
-          gameState: gameState!,
-        );
-
-        sceneNodes.add(asteroid.node);
-      } else {
-        final sceneryAsteroid = SceneryAsteroid(
-          position: newPosition,
-          rotation: newRotation,
-        );
-
-        sceneNodes.add(sceneryAsteroid.node);
-      }
+      final asteroid = Asteroid( // 全て Asteroid として生成
+        position: newPosition,
+        rotation: newRotation,
+        gameState: gameState!,
+      );
+      // collidableAsteroids.add(asteroid);
+      sceneNodes.add(asteroid.node);
     }
 
     scene.addAll(sceneNodes);
