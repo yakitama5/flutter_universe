@@ -14,7 +14,7 @@ import 'package:rocket_game/screens/scene_painter.dart';
 import 'package:rocket_game/screens/spike.dart';
 import 'package:rocket_game/screens/tunnel.dart';
 import 'package:rocket_game/services/resource_cache.dart';
-import 'package:vector_math/vector_math.dart';
+import 'package:vector_math/vector_math.dart' hide Colors;
 
 class RocketGame extends StatefulWidget {
   const RocketGame({super.key});
@@ -24,12 +24,20 @@ class RocketGame extends StatefulWidget {
 }
 
 class _RocketGameState extends State<RocketGame> {
+  static const _timerTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+  );
+
   Scene scene = Scene();
   GameMode gameMode = GameMode.startMenu;
 
   Ticker? tick;
   double time = 0;
   double deltaSeconds = 0;
+  double gameplayTime = 0.0;
+  bool isTimerRunning = false;
 
   /// コースに配置する隕石の総数
   static const totalAsteroids = 300;
@@ -43,6 +51,14 @@ class _RocketGameState extends State<RocketGame> {
   int lastScore = 0;
 
   int? currentMusicHandle;
+
+  String _formatGameplayTime(double timeInSeconds) {
+    final int hours = (timeInSeconds / 3600).floor();
+    final int minutes = (timeInSeconds / 60).floor() % 60;
+    final int seconds = timeInSeconds.floor() % 60;
+    final int milliseconds = (timeInSeconds * 1000).floor() % 1000;
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}.${milliseconds.toString().padLeft(3, '0')}';
+  }
 
   @override
   void initState() {
@@ -85,12 +101,15 @@ class _RocketGameState extends State<RocketGame> {
       onFinished: () {
         setState(() {
           gameMode = GameMode.finish;
+          isTimerRunning = false;
         });
       },
     );
     scene.add(goal.node);
 
     setState(() {
+      gameplayTime = 0.0;
+      isTimerRunning = true;
       gameMode = GameMode.playing;
     });
   }
@@ -203,11 +222,17 @@ class _RocketGameState extends State<RocketGame> {
 
   Widget build(BuildContext context) {
     asteroids.forEach((e) => e.update());
+    if (isTimerRunning) {
+      gameplayTime += deltaSeconds;
+    }
+
     if (gameState != null) {
       final player = gameState!.player;
       if (gameMode == GameMode.playing) {
         inputActions.updatePlayer(player);
-        player.update(deltaSeconds);
+        player.updatePlaying(deltaSeconds);
+      } else if (gameMode == GameMode.finish) {
+        player.updateFinish();
       }
       goal.update();
       if (gameMode == GameMode.playing) {
@@ -221,10 +246,22 @@ class _RocketGameState extends State<RocketGame> {
       }
     }
 
-    return SizedBox.expand(
-      child: CustomPaint(
-        painter: RocketScenePainter(scene: scene, camera: camera.camera),
-      ),
+    return Stack(
+      children: [
+        SizedBox.expand(
+          child: CustomPaint(
+            painter: RocketScenePainter(scene: scene, camera: camera.camera),
+          ),
+        ),
+        Positioned(
+          top: 20,
+          right: 20,
+          child: Text(
+            'Time: ${_formatGameplayTime(gameplayTime)}',
+            style: _timerTextStyle,
+          ),
+        ),
+      ],
     );
   }
 }

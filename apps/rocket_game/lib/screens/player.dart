@@ -103,7 +103,11 @@ class KinematicPlayer {
     return true;
   }
 
-  void update(double deltaSeconds) {
+  void updateFinish() {
+    runAnimation..weight = 0.0;
+  }
+
+  void updatePlaying(double deltaSeconds) {
     if (damageCooldown > 0) {
       damageCooldown = math.max(0, damageCooldown - deltaSeconds);
     }
