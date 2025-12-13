@@ -29,7 +29,7 @@ class Asteroid {
     /// プレイヤーとの衝突判定を監視
     final distance =
         (gameState.player.position + Vector3(0, 1, 0) - position).length;
-    if (distance > radius) {
+    if (distance < radius) {
       // プレイヤーにダメージを与える
       gameState.player.takeDamage();
     }

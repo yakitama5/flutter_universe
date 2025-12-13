@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_scene/scene.dart';
 import 'package:rocket_game/models/enum/asset_model.dart';
 import 'package:rocket_game/services/resource_cache.dart';
@@ -9,6 +8,14 @@ import 'package:vector_math/vector_math.dart';
 class KinematicPlayer {
   KinematicPlayer() {
     node = ResourceCache.getModel(AssetModel.starship);
+    idleAnimation = node.createAnimationClip(node.findAnimationByName("Idle")!)
+      ..loop = true
+      ..play();
+    runAnimation = node.createAnimationClip(node.findAnimationByName("Run")!)
+      ..loop = true
+      ..weight = 1.0
+      ..playbackTimeScale = initialPlaybackTimeScale
+      ..play();
   }
 
   /// キャラのスケール
@@ -16,24 +23,33 @@ class KinematicPlayer {
 
   late Node node;
 
-  // XY movement properties
-  final double kAccelerationRate = 8; // XY acceleration
-  final double kFrictionRate = 4; // XY friction
-  final double kMaxSpeedXY = 12; // Max speed on XY plane
+  // 移動関連の定数
+  /// XY軸への移動速度
+  static const double kMaxSpeedXY = 8;
 
-  // Z movement properties
-  final double kInitialVelocityZ = 2.0;
-  final double kAccelerationZ = 2.0;
-  final double kMaxVelocityZ = 30.0;
+  /// 初期速度
+  static const double kInitialVelocityZ = 1.0;
+
+  ///　加速度（秒間）
+  static const double kAccelerationZ = 2.0;
+
+  /// 最高速度
+  static const double kMaxVelocityZ = 10.0;
+
+  // Dashくんのアニメーション関連で利用する定数
+  static const double initialPlaybackTimeScale = 0.5;
+
+  // Dashくんのアニメーション関連で利用する変数
+  late AnimationClip idleAnimation;
+  late AnimationClip runAnimation;
+  double runPlaybackTimeScale = initialPlaybackTimeScale;
 
   Vector3 _position = Vector3.zero();
   Vector3 get position => _position;
 
-  Vector3 _direction = Vector3(0, 0, 1);
-
-  /// Velocity on the XY plane, controlled by user input.
-  Vector2 _velocityXY = Vector2.zero();
-  Vector2 get velocityXY => _velocityXY;
+  // No longer needed for rotation, but useful for camera/other logic
+  Vector2 get velocityXY =>
+      Vector2(_inputDirection.x, _inputDirection.y) * kMaxSpeedXY;
 
   /// Velocity on the Z axis, automatic forward movement.
   late double _velocityZ = kInitialVelocityZ;
@@ -52,19 +68,24 @@ class KinematicPlayer {
 
   void initPosition() {
     _position = Vector3.zero();
-    _velocityXY = Vector2.zero();
     _velocityZ = kInitialVelocityZ;
-    _direction = Vector3(0, 0, 1);
     updateNode();
   }
 
   void updateNode() {
     node.visible = damageCooldown % 0.2 <= 0.12;
 
-    // Create a rotation that points the ship in the direction of its movement
+    // Base rotation to point forward along +Z
+    var rotation = Quaternion.identity();
+
+    final roll = _inputDirection.x * 0.2;
+    final pitch = _inputDirection.y * 0.2;
+    final bankRotation = Quaternion.euler(math.pi + roll, pitch, 0);
+    rotation = bankRotation * rotation;
+
     final transform = Matrix4.compose(
       _position,
-      Quaternion.fromTwoVectors(Vector3(0, 0, 1), _direction),
+      rotation,
       Vector3(playerScale, playerScale, -playerScale),
     );
 
@@ -77,7 +98,7 @@ class KinematicPlayer {
       return false;
     }
     damageCooldown = 2;
-    _velocityXY = Vector2.zero();
+    // XY velocity is now instant, so no need to reset it.
     _velocityZ = kInitialVelocityZ; // Reset forward speed
     return true;
   }
@@ -85,24 +106,6 @@ class KinematicPlayer {
   void update(double deltaSeconds) {
     if (damageCooldown > 0) {
       damageCooldown = math.max(0, damageCooldown - deltaSeconds);
-    }
-
-    // Handle XY movement based on input
-    // Speed up when there's input.
-    if (_inputDirection.length2 > 1e-3) {
-      debugPrint("kiteru?");
-      _velocityXY += _inputDirection * kAccelerationRate * deltaSeconds;
-      if (_velocityXY.length > 1) {
-        _velocityXY.normalize();
-      }
-    }
-    // Slow down when there's no input.
-    else if (_velocityXY.length2 > 0) {
-      double speed = math.max(
-        0,
-        _velocityXY.length - kFrictionRate * deltaSeconds,
-      );
-      _velocityXY = _velocityXY.normalized() * speed;
     }
 
     // Handle Z movement (automatic acceleration)
@@ -113,8 +116,8 @@ class KinematicPlayer {
 
     // Combine velocities
     Vector3 velocity = Vector3(
-      _velocityXY.x * kMaxSpeedXY,
-      _velocityXY.y * kMaxSpeedXY, // Input controls Y-axis now
+      _inputDirection.x * kMaxSpeedXY, // XY velocity is now instantaneous
+      _inputDirection.y * kMaxSpeedXY,
       _velocityZ, // Z-axis is automatic forward motion
     );
 

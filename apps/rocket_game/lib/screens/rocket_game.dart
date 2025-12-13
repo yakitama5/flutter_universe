@@ -36,6 +36,7 @@ class _RocketGameState extends State<RocketGame> {
 
   final InputActions inputActions = InputActions();
   final FollowCamera camera = FollowCamera();
+  List<Asteroid> asteroids = [];
   GameState? gameState;
 
   int lastScore = 0;
@@ -82,9 +83,6 @@ class _RocketGameState extends State<RocketGame> {
   void setupCourse() {
     final random = Random();
     final allAsteroidPositions = <Vector3>[];
-    final sceneNodes = <Node>[];
-    // GameStateが衝突判定を行うには、このリストが必要になる可能性があります。
-    // final collidableAsteroids = <Asteroid>[];
 
     const courseWidth = 10.0; // 10x10に戻す
     const courseHeight = 10.0; // 10x10に戻す
@@ -162,17 +160,17 @@ class _RocketGameState extends State<RocketGame> {
         random.nextDouble() * 2 * pi,
       );
 
-      final asteroid = Asteroid(
-        // 全て Asteroid として生成
-        position: newPosition,
-        rotation: newRotation,
-        gameState: gameState!,
+      asteroids.add(
+        Asteroid(
+          // 全て Asteroid として生成
+          position: newPosition,
+          rotation: newRotation,
+          gameState: gameState!,
+        ),
       );
-      // collidableAsteroids.add(asteroid);
-      sceneNodes.add(asteroid.node);
     }
 
-    scene.addAll(sceneNodes);
+    scene.addAll(asteroids.map((e) => e.node));
   }
 
   void resetTimer() {
@@ -189,10 +187,11 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   Widget build(BuildContext context) {
-    inputActions.updatePlayer(gameState!.player);
-    gameState?.player.update(deltaSeconds);
+    asteroids.forEach((e) => e.update());
     if (gameState != null) {
       final player = gameState!.player;
+      inputActions.updatePlayer(player);
+      player.update(deltaSeconds);
       camera.updateGameplay(
         player.position,
         Vector3(player.velocityXY.x, 0, player.velocityZ),
