@@ -10,9 +10,9 @@ class Background {
   Background() {
     // 生成時に位置と回転角度を決定する
     final transform = Matrix4.compose(
-      Vector3(0, 0, 460),
+      Vector3(0, 0, 480), // ゴールの先を包むように配置
       Quaternion.identity(),
-      Vector3(scale, scale, scale),
+      Vector3(scale, scale, scale), // 球の裏面に画像を表示
     );
     node = ResourceCache.getModel(AssetModel.background)
       ..globalTransform = transform;
