@@ -5,6 +5,7 @@ import 'package:rocket_game/models/enum/asset_model.dart';
 import 'package:rocket_game/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
+/// プレイヤーキャラクター（Dash）の動作や状態を管理するクラス。
 class KinematicPlayer {
   KinematicPlayer() {
     node = ResourceCache.getModel(AssetModel.dash);
@@ -49,11 +50,11 @@ class KinematicPlayer {
   Vector3 _position = initialPosition;
   Vector3 get position => _position;
 
-  // No longer needed for rotation, but useful for camera/other logic
+  /// カメラや他のロジックで利用されるXY平面の速度ベクトル。
   Vector2 get velocityXY =>
       Vector2(_inputDirection.x, _inputDirection.y) * kMaxSpeedXY;
 
-  /// Velocity on the Z axis, automatic forward movement.
+  /// Z軸方向（前進方向）の速度。自動で前進する。
   late double _velocityZ = kInitialVelocityZ;
   double get velocityZ => _velocityZ;
 
@@ -92,14 +93,14 @@ class KinematicPlayer {
     node.globalTransform = transform;
   }
 
-  /// Returns true if the player took damage.
+  /// プレイヤーがダメージを受けたかどうかを返す。
   bool takeDamage() {
     if (damageCooldown > 0) {
       return false;
     }
     damageCooldown = 2;
-    // XY velocity is now instant, so no need to reset it.
-    _velocityZ = kInitialVelocityZ; // Reset forward speed
+    // XY平面の速度は瞬間的に決まるためリセット不要。
+    _velocityZ = kInitialVelocityZ; // 前進速度をリセット
     return true;
   }
 
@@ -112,30 +113,30 @@ class KinematicPlayer {
       damageCooldown = math.max(0, damageCooldown - deltaSeconds);
     }
 
-    // Handle Z movement (automatic acceleration)
+    // Z軸方向の移動（自動加速）を処理する
     _velocityZ = math.min(
       kMaxVelocityZ,
       _velocityZ + kAccelerationZ * deltaSeconds,
     );
 
-    // Link animation speed to Z-velocity
+    // アニメーション速度をZ軸の速度に連動させる
     final speedProgress =
         (_velocityZ - kInitialVelocityZ) / (kMaxVelocityZ - kInitialVelocityZ);
     runAnimation.playbackTimeScale =
         initialPlaybackTimeScale +
         (kMaxPlaybackTimeScale - initialPlaybackTimeScale) * speedProgress;
 
-    // Combine velocities
+    // 各軸の速度を合成する
     Vector3 velocity = Vector3(
-      _inputDirection.x * kMaxSpeedXY, // XY velocity is now instantaneous
+      _inputDirection.x * kMaxSpeedXY, // XY平面の速度は瞬間的に決まる
       _inputDirection.y * kMaxSpeedXY,
-      _velocityZ, // Z-axis is automatic forward motion
+      _velocityZ, // Z軸は自動的な前進移動
     );
 
-    // Displace.
+    // 位置を更新する
     _position += velocity * deltaSeconds;
 
-    // Apply X-axis boundary checks
+    // X軸の境界チェックを適用する
     const double kXBoundary = 5.0;
     if (_position.x > kXBoundary) {
       _position.x = kXBoundary;
@@ -143,7 +144,7 @@ class KinematicPlayer {
       _position.x = -kXBoundary;
     }
 
-    // Apply Y-axis boundary checks
+    // Y軸の境界チェックを適用する
     const double kYBoundary = 5.0;
     if (_position.y > kYBoundary) {
       _position.y = kYBoundary;

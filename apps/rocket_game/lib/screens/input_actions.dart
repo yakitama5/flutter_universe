@@ -2,10 +2,10 @@ import 'package:flutter/services.dart';
 import 'package:rocket_game/screens/player.dart';
 import 'package:vector_math/vector_math.dart';
 
-/// Reads and converts raw input data from the mouse/keyboard/gamepad into high
-/// level events and state.
+/// マウス、キーボード、ゲームパッドからの生の入力データを読み取り、
+/// 高レベルのイベントと状態に変換します。
 ///
-/// Only one instance of this class should be created.
+/// このクラスのインスタンスは1つだけ作成する必要があります。
 class InputActions {
   InputActions() {
     ServicesBinding.instance.keyboard.addHandler(_onKeyEvent);

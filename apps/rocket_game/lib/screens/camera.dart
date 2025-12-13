@@ -4,6 +4,7 @@ import 'package:flutter_scene/scene.dart';
 import 'package:rocket_game/screens/math_utils.dart';
 import 'package:vector_math/vector_math.dart';
 
+/// プレイヤーを追従するカメラを管理するクラス
 class FollowCamera {
   static final Vector3 kFollowOffset = Vector3(0, 0, -5);
   static const double kPlayerBoundary = 5.0;
@@ -14,23 +15,25 @@ class FollowCamera {
 
   Camera get camera => PerspectiveCamera(position: position, target: target);
 
+  /// カメラをリセットする
   void reset() {
-    // Instantly snap camera to the starting position behind the player at origin
+    // カメラを原点にいるプレイヤーの背後の初期位置に即座に移動させる
     final Vector3 framingTarget = Vector3.zero();
     position = framingTarget + kFollowOffset;
     target = framingTarget + Vector3(0, 0, 30);
   }
 
+  /// ゲームプレイ中のカメラの動きを更新する
   void updateGameplay(
     Vector3 playerPosition,
     Vector3 movementDirection,
     double deltaSeconds,
   ) {
-    // Calculate player's relative position within the boundaries [-1, 1]
+    // 境界 [-1, 1] 内でのプレイヤーの相対位置を計算する
     final double relativeX = playerPosition.x / kPlayerBoundary;
     final double relativeY = playerPosition.y / kPlayerBoundary;
 
-    // Calculate a dynamic target for framing, this is where the camera wants to center.
+    // カメラが中央に配置したいフレーミング用の動的ターゲットを計算する
     final Vector3 framingTarget =
         playerPosition.clone() -
         Vector3(
@@ -39,15 +42,14 @@ class FollowCamera {
           0,
         );
 
-    // The actual point the camera looks at is ahead of the framing target.
+    // カメラが実際に注視する点は、フレーミングターゲットの前方になる
     final Vector3 destinationTarget = framingTarget + Vector3(0, 0, 30);
 
-    // The camera's position is offset from the framing target.
+    // カメラの位置はフレーミングターゲットからオフセットされる
     final Vector3 destinationPosition = framingTarget + kFollowOffset;
 
-    // Use a stronger lerp for the target to make the camera feel more responsive
-    // to where the player is, but a weaker lerp for the position to smooth
-    // out the movement.
+    // ターゲットにはより強い線形補間を使用してカメラの応答性を高め、
+    // 位置にはより弱い線形補間を使用して動きを滑らかにする
     final double targetLerp = 0.1;
     final double positionLerp = 0.08;
 
@@ -65,6 +67,7 @@ class FollowCamera {
     );
   }
 
+  /// 概要カメラの動きを更新する
   void updateOverview(double deltaSeconds, double timeElapsed) {
     position = vector3LerpDeltaTime(
       position,
@@ -80,19 +83,20 @@ class FollowCamera {
     target = vector3LerpDeltaTime(target, Vector3.zero(), 0.4, deltaSeconds);
   }
 
+  /// フィニッシュ時のカメラの動きを更新する
   void updateFinishCamera(Vector3 playerPosition, double deltaSeconds) {
-    // Define the offset for the finish camera view (front-right)
+    // フィニッシュカメラビュー（右前）のオフセットを定義する
     final Vector3 finishOffset = Vector3(2, 1, 3);
 
-    // Calculate the destination position and target
+    // 目標の位置とターゲットを計算する
     final Vector3 destinationPosition = playerPosition + finishOffset;
     final Vector3 destinationTarget = playerPosition;
 
-    // Smoothly move the camera to the finish position
+    // カメラをフィニッシュ位置まで滑らかに移動させる
     position = vector3LerpDeltaTime(
       position,
       destinationPosition,
-      0.05, // Use a slow lerp for a cinematic feel
+      0.05, // シネマティックな雰囲気のために遅い線形補間を使用
       deltaSeconds,
     );
     target = vector3LerpDeltaTime(
