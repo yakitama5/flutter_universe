@@ -72,4 +72,27 @@ class FollowCamera {
     );
     target = vector3LerpDeltaTime(target, Vector3.zero(), 0.4, deltaSeconds);
   }
+
+  void updateFinishCamera(Vector3 playerPosition, double deltaSeconds) {
+    // Define the offset for the finish camera view (front-right)
+    final Vector3 finishOffset = Vector3(2, 1, 3);
+
+    // Calculate the destination position and target
+    final Vector3 destinationPosition = playerPosition + finishOffset;
+    final Vector3 destinationTarget = playerPosition;
+
+    // Smoothly move the camera to the finish position
+    position = vector3LerpDeltaTime(
+      position,
+      destinationPosition,
+      0.05, // Use a slow lerp for a cinematic feel
+      deltaSeconds,
+    );
+    target = vector3LerpDeltaTime(
+      target,
+      destinationTarget,
+      0.05,
+      deltaSeconds,
+    );
+  }
 }

@@ -82,7 +82,11 @@ class _RocketGameState extends State<RocketGame> {
 
     goal = Goal(
       gameState: gameState!,
-      onFinished: () {},
+      onFinished: () {
+        setState(() {
+          gameMode = GameMode.finish;
+        });
+      },
     );
     scene.add(goal.node);
 
@@ -201,14 +205,20 @@ class _RocketGameState extends State<RocketGame> {
     asteroids.forEach((e) => e.update());
     if (gameState != null) {
       final player = gameState!.player;
-      inputActions.updatePlayer(player);
-      player.update(deltaSeconds);
+      if (gameMode == GameMode.playing) {
+        inputActions.updatePlayer(player);
+        player.update(deltaSeconds);
+      }
       goal.update();
-      camera.updateGameplay(
-        player.position,
-        Vector3(player.velocityXY.x, 0, player.velocityZ),
-        deltaSeconds,
-      );
+      if (gameMode == GameMode.playing) {
+        camera.updateGameplay(
+          player.position,
+          Vector3(player.velocityXY.x, 0, player.velocityZ),
+          deltaSeconds,
+        );
+      } else if (gameMode == GameMode.finish) {
+        camera.updateFinishCamera(player.position, deltaSeconds);
+      }
     }
 
     return SizedBox.expand(
