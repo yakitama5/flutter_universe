@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
+import 'package:rocket_game/models/enum/asset_model.dart';
 import 'package:rocket_game/screens/camera.dart';
 import 'package:rocket_game/screens/game_mode.dart';
 import 'package:rocket_game/screens/game_state.dart';
@@ -56,6 +57,7 @@ class _RocketGameState extends State<RocketGame> {
     resetTimer();
 
     ResourceCache.preloadAll().then((_) {
+      scene.add(ResourceCache.getModel(AssetModel.background));
       gameState = GameState(
         scene: scene,
         player: KinematicPlayer(),

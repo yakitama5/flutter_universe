@@ -8,6 +8,7 @@ void main(List<String> args) async {
       inputFilePaths: [
         'assets/glb/dash.glb',
         'assets/glb/spike.glb',
+        'assets/glb/background.glb',
         'assets/glb/asteroid1.glb',
         'assets/glb/asteroid2.glb',
         'assets/glb/starship.glb',

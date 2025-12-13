@@ -4,7 +4,8 @@ enum AssetModel {
   asteroid2('build/models/asteroid2.model'),
   starship('build/models/starship.model', unlit: true),
   dash('build/models/dash.model'),
-  spike('build/models/spike.model')
+  spike('build/models/spike.model'),
+  background('build/models/background.model'),
   ;
 
   final String path;
