@@ -29,6 +29,15 @@ class _RocketGameState extends State<RocketGame> {
     fontSize: 24,
     fontWeight: FontWeight.bold,
   );
+  static const _congratsTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 48,
+    fontWeight: FontWeight.bold,
+  );
+  static const _restartTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 20,
+  );
 
   Scene scene = Scene();
   GameMode gameMode = GameMode.startMenu;
@@ -38,6 +47,7 @@ class _RocketGameState extends State<RocketGame> {
   double deltaSeconds = 0;
   double gameplayTime = 0.0;
   bool isTimerRunning = false;
+  bool _isRestarting = false;
 
   /// コースに配置する隕石の総数
   static const totalAsteroids = 300;
@@ -74,22 +84,31 @@ class _RocketGameState extends State<RocketGame> {
     resetTimer();
 
     ResourceCache.preloadAll().then((_) {
-      scene.add(Background().node);
-      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength)).node);
-      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 2)).node);
-      scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 3)).node);
-      gameState = GameState(
-        scene: scene,
-        player: KinematicPlayer(),
-      );
-
       setupPlay();
     });
 
     super.initState();
   }
 
+  void restartGame() {
+    // Clear old objects
+    scene.removeAll();
+    asteroids.clear();
+
+    // Setup a new game
+    setupPlay();
+    _isRestarting = false;
+  }
+
   void setupPlay() {
+    scene.add(Background().node);
+    scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength)).node);
+    scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 2)).node);
+    scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 3)).node);
+    gameState = GameState(
+      scene: scene,
+      player: KinematicPlayer(),
+    );
     setupCourse();
 
     // 初期位置に設定
@@ -233,6 +252,12 @@ class _RocketGameState extends State<RocketGame> {
         player.updatePlaying(deltaSeconds);
       } else if (gameMode == GameMode.finish) {
         player.updateFinish();
+        if (inputActions.enter && !_isRestarting) {
+          _isRestarting = true;
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            restartGame();
+          });
+        }
       }
       goal.update();
       if (gameMode == GameMode.playing) {
@@ -261,6 +286,17 @@ class _RocketGameState extends State<RocketGame> {
             style: _timerTextStyle,
           ),
         ),
+        if (gameMode == GameMode.finish)
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text('Congratulations!', style: _congratsTextStyle),
+                SizedBox(height: 20),
+                Text('Press Space to Restart', style: _restartTextStyle),
+              ],
+            ),
+          ),
       ],
     );
   }
