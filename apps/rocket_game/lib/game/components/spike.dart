@@ -1,7 +1,7 @@
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/models/enum/asset_model.dart';
-import 'package:rocket_game/screens/game_state.dart';
-import 'package:rocket_game/services/resource_cache.dart';
+import 'package:rocket_game/domain/models/asset_model.dart';
+import 'package:rocket_game/game/core/game_state.dart';
+import 'package:rocket_game/infrastructure/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
 /// 障害物を管理するクラス

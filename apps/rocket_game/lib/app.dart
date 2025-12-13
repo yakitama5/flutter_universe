@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rocket_game/screens/rocket_game.dart';
+import 'package:rocket_game/presentation/screens/rocket_game_screen.dart';
 
 /// アプリケーションのメインウィジェット
 class App extends StatelessWidget {

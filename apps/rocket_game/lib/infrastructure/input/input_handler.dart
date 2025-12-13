@@ -1,13 +1,13 @@
 import 'package:flutter/services.dart';
-import 'package:rocket_game/screens/player.dart';
+import 'package:rocket_game/game/components/player.dart';
 import 'package:vector_math/vector_math.dart';
 
 /// マウス、キーボード、ゲームパッドからの生の入力データを読み取り、
 /// 高レベルのイベントと状態に変換します。
 ///
 /// このクラスのインスタンスは1つだけ作成する必要があります。
-class InputActions {
-  InputActions() {
+class InputHandler {
+  InputHandler() {
     ServicesBinding.instance.keyboard.addHandler(_onKeyEvent);
   }
 

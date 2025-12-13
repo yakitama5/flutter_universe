@@ -1,5 +1,5 @@
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/screens/player.dart';
+import 'package:rocket_game/game/components/player.dart';
 
 class GameState {
   GameState({

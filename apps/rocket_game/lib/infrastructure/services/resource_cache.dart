@@ -1,5 +1,5 @@
 import 'package:flutter_scene/scene.dart';
-import '../models/enum/asset_model.dart';
+import 'package:rocket_game/domain/models/asset_model.dart';
 
 /// 3Dモデルのキャッシュを管理するクラス
 class ResourceCache {

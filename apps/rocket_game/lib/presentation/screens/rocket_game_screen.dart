@@ -3,17 +3,17 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/screens/background.dart';
-import 'package:rocket_game/screens/camera.dart';
-import 'package:rocket_game/screens/game_mode.dart';
-import 'package:rocket_game/screens/game_state.dart';
-import 'package:rocket_game/screens/goal.dart';
-import 'package:rocket_game/screens/input_actions.dart';
-import 'package:rocket_game/screens/player.dart';
-import 'package:rocket_game/screens/scene_painter.dart';
-import 'package:rocket_game/screens/spike.dart';
-import 'package:rocket_game/screens/tunnel.dart';
-import 'package:rocket_game/services/resource_cache.dart';
+import 'package:rocket_game/game/components/background.dart';
+import 'package:rocket_game/game/systems/camera_system.dart';
+import 'package:rocket_game/game/core/game_mode.dart';
+import 'package:rocket_game/game/core/game_state.dart';
+import 'package:rocket_game/game/components/goal.dart';
+import 'package:rocket_game/infrastructure/input/input_handler.dart';
+import 'package:rocket_game/game/components/player.dart';
+import 'package:rocket_game/presentation/widgets/scene_painter.dart';
+import 'package:rocket_game/game/components/spike.dart';
+import 'package:rocket_game/game/components/tunnel.dart';
+import 'package:rocket_game/infrastructure/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart' hide Colors;
 
 class RocketGame extends StatefulWidget {
@@ -54,8 +54,8 @@ class _RocketGameState extends State<RocketGame> {
   /// コースに配置する隕石の総数
   static const totalAsteroids = 300;
 
-  final InputActions inputActions = InputActions();
-  final FollowCamera camera = FollowCamera();
+  final InputHandler inputActions = InputHandler();
+  final CameraSystem camera = CameraSystem();
   List<Spike> asteroids = [];
   GameState? gameState;
   late Goal goal;

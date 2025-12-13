@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/models/enum/asset_model.dart';
-import 'package:rocket_game/services/resource_cache.dart';
+import 'package:rocket_game/domain/models/asset_model.dart';
+import 'package:rocket_game/infrastructure/services/resource_cache.dart';
 import 'package:vector_math/vector_math.dart';
 
 /// プレイヤーキャラクター（Dash）の動作や状態を管理するクラス。

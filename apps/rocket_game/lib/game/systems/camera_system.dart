@@ -1,11 +1,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter_scene/scene.dart';
-import 'package:rocket_game/screens/math_utils.dart';
+import 'package:rocket_game/util/math.dart';
 import 'package:vector_math/vector_math.dart';
 
 /// プレイヤーを追従するカメラを管理するクラス
-class FollowCamera {
+class CameraSystem {
   static final Vector3 kFollowOffset = Vector3(0, 0, -5);
   static const double kPlayerBoundary = 5.0;
   static final Vector3 kFramingOffset = Vector3(3, 2, 0);
