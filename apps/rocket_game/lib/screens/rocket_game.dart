@@ -93,10 +93,10 @@ class _RocketGameState extends State<RocketGame> {
   }
 
   void restartGame() {
-    // シーン内のオブジェクトを一旦削除
+    // シーン内のオブジェクトをすべて削除
     scene.removeAll();
 
-    // 新規にプレイ時のセットアップを行う
+    // 新たなプレイのためのセットアップを実行
     setupPlay();
     setState(() {
       gameMode = GameMode.playing;
@@ -111,7 +111,7 @@ class _RocketGameState extends State<RocketGame> {
     scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 2)).node);
     scene.add(Tunnel(position: Vector3(0, -6, Tunnel.kZLength * 3)).node);
 
-    // カメラの切り替わりを即時にするため、リセット処理を行う
+    // カメラの切り替えを即座に行うため、リセット処理を実行
     camera.reset();
 
     gameState = GameState(
@@ -120,7 +120,7 @@ class _RocketGameState extends State<RocketGame> {
     );
     setupCourse();
 
-    // 初期位置に設定
+    // プレイヤーを初期位置に設定
     gameState?.player.initPosition();
     scene.add(gameState!.player.node);
 
@@ -153,7 +153,7 @@ class _RocketGameState extends State<RocketGame> {
     const asteroidCollisionMargin = asteroidSize; // 隕石の直径
     final asteroidCollisionMarginSq = pow(asteroidCollisionMargin, 2);
 
-    // 安全な経路の制御点を生成
+    // 安全な経路の制御点を生成する
     const controlPointCount = 2;
     final pathPoints = List.generate(controlPointCount + 1, (i) {
       final z = (courseLength / controlPointCount) * i;
@@ -169,7 +169,7 @@ class _RocketGameState extends State<RocketGame> {
       return Vector3(x, y, z);
     });
 
-    // 隕石を生成
+    // 隕石を生成する
     for (var i = 0; i < totalAsteroids; i++) {
       Vector3 newPosition;
 
@@ -197,7 +197,7 @@ class _RocketGameState extends State<RocketGame> {
           continue;
         }
 
-        // 既存の全隕石との衝突チェック
+        // 既存のすべての隕石との衝突をチェック
         bool overlaps = false;
         for (final existingPosition in allAsteroidPositions) {
           if (existingPosition.distanceToSquared(newPosition) <
@@ -222,7 +222,7 @@ class _RocketGameState extends State<RocketGame> {
 
       asteroids.add(
         Spike(
-          // 全て Asteroid として生成
+          // すべての障害物を隕石として生成
           position: newPosition,
           rotation: newRotation,
           gameState: gameState!,
@@ -313,12 +313,7 @@ class _RocketGameState extends State<RocketGame> {
           ),
         if (gameMode == GameMode.startMenu)
           Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text('Press Space to Start', style: _restartTextStyle),
-              ],
-            ),
+            child: Text('Press Space to Start', style: _restartTextStyle),
           ),
       ],
     );
