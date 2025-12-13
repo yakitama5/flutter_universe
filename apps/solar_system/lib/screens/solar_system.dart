@@ -37,47 +37,47 @@ class SolarSystem extends StatefulWidget {
 
 /// プラネタリウムの状態を管理するステートクラス
 class SolarSystemState extends State<SolarSystem> {
-  // 3Dシーンとオブジェクトのリスト
+  /// 3Dシーンとオブジェクトのリスト
   Scene scene = Scene();
   List<Planet> planets = [];
   final Map<Planet, Behavior> _behaviors = {};
   List<ShiningStar> shiningStars = [];
 
-  // ロード状態
+  /// ロード状態
   bool loaded = false;
 
-  // カメラ操作用のフォーカスノード
+  /// カメラ操作用のフォーカスノード
   final FocusNode _focusNode = FocusNode();
 
-  // 星の配置用の定数
+  /// 星の配置用の定数
   static const int _numberOfStars = 1000;
 
-  // カメラ制御用の定数
+  /// カメラ制御用の定数
   static const double _universeSize = 100;
   static const double _maxPitch = 89;
   static const double _minPitch = -89;
   static const double _cameraSpeed = 0.5;
   static const double _rotationSpeed = 1;
 
-  // カメラの状態
+  /// カメラの状態
   vm.Vector3 _cameraPosition = vm.Vector3(0, _universeSize - 1, 0);
   double _cameraYaw = 0;
   double _cameraPitch = -90;
   double _lastScale = 1;
   bool _isPaused = false;
 
-  // ジェスチャー用の認識器
+  /// ジェスチャー用の認識器
   late final ScaleGestureRecognizer _scaleRecognizer;
   late final PanGestureRecognizer _panRecognizer;
 
   @override
   void initState() {
     super.initState();
-    // キャッシュを初期化
+    // キャッシュを初期化し、太陽系を構築する
     ResourceCache.preloadAll().then((_) {
       _buildSolarSystemUniverse();
 
-      // 輝く星を作成してシーンに追加
+      // 輝く星を作成してシーンに追加する
       final random = Random();
       final starModels = [
         AssetModel.pentagram,
@@ -85,7 +85,7 @@ class SolarSystemState extends State<SolarSystem> {
         AssetModel.fourPointedStar,
       ];
       shiningStars = List.generate(_numberOfStars, (i) {
-        // 球体内にランダムな座標を生成
+        // 球体内にランダムな座標を生成する
         final r = _universeSize * pow(random.nextDouble(), 1 / 3);
         final theta = acos(2 * random.nextDouble() - 1);
         final phi = 2 * pi * random.nextDouble();
@@ -229,6 +229,7 @@ class SolarSystemState extends State<SolarSystem> {
     );
   }
 
+  /// キーイベントを処理する
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
       setState(() {
@@ -272,12 +273,14 @@ class SolarSystemState extends State<SolarSystem> {
     return KeyEventResult.ignored;
   }
 
+  /// スケールジェスチャーの開始を処理する
   void _handleScaleStart(ScaleStartDetails details) {
     setState(() {
       _lastScale = 1.0;
     });
   }
 
+  /// スケールジェスチャーの更新を処理する
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     setState(() {
       final cameraFront = vm.Vector3(
@@ -320,6 +323,7 @@ class SolarSystemState extends State<SolarSystem> {
     });
   }
 
+  /// パンジェスチャーの更新を処理する
   void _handlePanUpdate(DragUpdateDetails details) {
     // 1本指ドラッグによる視点回転
     setState(() {
@@ -330,6 +334,7 @@ class SolarSystemState extends State<SolarSystem> {
     });
   }
 
+  /// 一時停止状態を切り替える
   void _togglePauseState() {
     setState(() {
       _isPaused = !_isPaused;
@@ -440,6 +445,7 @@ class SolarSystemState extends State<SolarSystem> {
   }
 }
 
+/// シーンを描画するカスタムペインター
 class _ScenePainter extends CustomPainter {
   _ScenePainter({
     required this.scene,
