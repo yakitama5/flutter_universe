@@ -79,7 +79,7 @@ class SolarSystemState extends State<SolarSystem> {
 
       // 輝く星を作成してシーンに追加する
       final random = Random();
-      final starModels = [
+      final starModels = const [
         AssetModel.pentagram,
         AssetModel.polygonalStar,
         AssetModel.fourPointedStar,
@@ -447,7 +447,7 @@ class SolarSystemState extends State<SolarSystem> {
 
 /// シーンを描画するカスタムペインター
 class _ScenePainter extends CustomPainter {
-  _ScenePainter({
+  const _ScenePainter({
     required this.scene,
     required this.cameraPosition,
     required this.cameraYaw,

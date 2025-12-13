@@ -3,7 +3,7 @@ import 'behavior.dart';
 
 /// 惑星の自転を制御する振る舞い
 class RotationBehavior implements Behavior {
-  RotationBehavior({required this.rotationSpeed});
+  const RotationBehavior({required this.rotationSpeed});
 
   final double rotationSpeed;
 

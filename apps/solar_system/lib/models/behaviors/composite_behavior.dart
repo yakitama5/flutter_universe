@@ -3,7 +3,7 @@ import 'behavior.dart';
 
 /// 複数の振る舞いを組み合わせるためのコンテナ
 class CompositeBehavior implements Behavior {
-  CompositeBehavior({required this.behaviors});
+  const CompositeBehavior({required this.behaviors});
 
   final List<Behavior> behaviors;
 
